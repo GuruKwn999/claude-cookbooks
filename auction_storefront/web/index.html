@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hammer &amp; Hearth</title>
+<meta name="description" content="Single-lot antiques, jewellery and furniture bought at auction and catalogued honestly. Ships worldwide, 44 currencies, 32 languages.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Bodoni+Moda:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/css/storefront.css">
+</head>
+<body>
+
+<!-- Fill these in to go live. Empty values keep the shop in demo mode:
+     the catalogue, cart and curator all work, but no money moves. -->
+<script>
+  window.HH_CONFIG = {
+    stripeKey: "",       // pk_live_… — publishable key only, never the secret
+    paypalClientId: "",  // PayPal REST client id
+    apiBase: "",         // e.g. "https://api.yourshop.com" — see server/main.py
+  };
+</script>
+
+<div class="topbar">
+  <span class="topbar-note">Worldwide shipping · 44 currencies · 32 languages</span>
+  <div class="locale-picks">
+    <label class="visually-hidden" for="lang-select" data-t="language">Language</label>
+    <select id="lang-select"></select>
+    <label class="visually-hidden" for="currency-select" data-t="currency">Currency</label>
+    <select id="currency-select"></select>
+    <button class="theme-toggle" id="theme-toggle" type="button">Light</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <a class="wordmark" href="#catalogue">
+    <b>Hammer</b><span>&amp;</span><b>Hearth</b>
+    <i data-t="tagline">Auction-sourced. One of each.</i>
+  </a>
+
+  <nav class="mast-nav">
+    <a href="#catalogue" data-t="navCatalogue">Catalogue</a>
+    <a href="#how" data-t="navHow">How it works</a>
+    <a href="#shipping" data-t="navShipping">Shipping</a>
+    <a href="#consign" data-t="navContact">Contact</a>
+  </nav>
+
+  <div class="mast-actions">
+    <div class="search-field">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>
+      </svg>
+      <label class="visually-hidden" for="search-input" data-t="search">Search lots</label>
+      <input id="search-input" type="search" data-t-ph="search" placeholder="Search lots">
+    </div>
+    <button class="paddle-btn" id="cart-button" type="button">
+      <span data-t="cart">Cart</span>
+      <span class="paddle-count" id="cart-count" hidden>0</span>
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <p class="eyebrow">Sale rooms, estate clearances, county auction barns</p>
+    <h1>Bought at the block.<br>Sold with <em>the faults written down.</em></h1>
+    <p>
+      Every piece here came out of a real auction with a lot number attached to it.
+      I keep that number, name the sale room it came from, and photograph what is
+      wrong with it before I photograph what is right. There is one of each.
+    </p>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><b>24</b><span>lots in the current catalogue</span></div>
+    <div class="hero-stat"><b>6</b><span>condition grades, applied strictly</span></div>
+    <div class="hero-stat"><b>14</b><span>day returns, grades A through C</span></div>
+  </div>
+</section>
+
+<main class="catalogue" id="catalogue">
+  <aside class="rail">
+    <div class="rail-group">
+      <h3 data-t="category">Category</h3>
+      <div id="cat-list"></div>
+    </div>
+    <div class="rail-group">
+      <h3 data-t="condition">Condition</h3>
+      <div id="grade-list"></div>
+    </div>
+    <div class="rail-group">
+      <h3 data-t="sort">Sort</h3>
+      <label class="visually-hidden" for="sort-select" data-t="sort">Sort</label>
+      <select id="sort-select"></select>
+    </div>
+  </aside>
+
+  <div>
+    <div class="results-head">
+      <h2 data-t="navCatalogue">Catalogue</h2>
+      <span class="results-count mono" id="results-count"></span>
+    </div>
+    <div class="lot-grid" id="lot-grid"></div>
+  </div>
+</main>
+
+<section class="band" id="how">
+  <div class="band-head">
+    <p class="eyebrow">How it works</p>
+    <h2>Three steps, and the second one is the whole business.</h2>
+    <p>
+      Anyone can buy at auction. The part that decides whether you get a fair deal
+      is what gets written down between the sale room and the shelf.
+    </p>
+  </div>
+  <div class="trio">
+    <div class="trio-item">
+      <h3>Bought at the block</h3>
+      <p>
+        I bid in person at regional sale rooms and estate clearances. The lot
+        number, the sale and the house stay attached to the piece for life — you
+        can see all three on every listing.
+      </p>
+    </div>
+    <div class="trio-item">
+      <h3>Graded against a fixed scale</h3>
+      <p>
+        A to D, applied the same way every time. Grade D means "as found" and is
+        priced as a project, not as a bargain. Faults go in the lot note in plain
+        language: the dent, the hairline, the two missing marcasites.
+      </p>
+    </div>
+    <div class="trio-item">
+      <h3>Packed for the object, not the box</h3>
+      <p>
+        Glass double-boxed, textiles rolled not folded, furniture palletised and
+        quoted separately. Tracked and insured for the full purchase price, every
+        time, with the real value on the customs form.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="shipping">
+  <div class="band-head">
+    <p class="eyebrow" data-t="navShipping">Shipping</p>
+    <h2>What it costs to get it to you.</h2>
+    <p>
+      Rates below are for lots under 20 kg. Anything heavier is quoted as freight
+      after checkout, and nothing moves until you approve the number.
+    </p>
+  </div>
+  <div class="table-wrap">
+    <table class="ledger">
+      <caption>Indicative rates, insured to the full purchase price. Duty and import VAT are the buyer's, outside the US.</caption>
+      <thead>
+        <tr><th scope="col">Destination</th><th scope="col">Service</th><th scope="col">In transit</th><th scope="col">Under 5 kg</th><th scope="col">5–20 kg</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>United States</td><td>Ground, signature</td><td class="mono">3–5 days</td><td class="mono">$28</td><td class="mono">$64</td></tr>
+        <tr><td>Canada &amp; Mexico</td><td>Expedited, tracked</td><td class="mono">5–8 days</td><td class="mono">$46</td><td class="mono">$98</td></tr>
+        <tr><td>United Kingdom &amp; Ireland</td><td>Air, DDU</td><td class="mono">4–7 days</td><td class="mono">$58</td><td class="mono">$126</td></tr>
+        <tr><td>European Union</td><td>Air, DDU</td><td class="mono">5–9 days</td><td class="mono">$62</td><td class="mono">$134</td></tr>
+        <tr><td>Australia &amp; New Zealand</td><td>Air, tracked</td><td class="mono">7–12 days</td><td class="mono">$74</td><td class="mono">$158</td></tr>
+        <tr><td>Japan, Korea, Singapore</td><td>Air, tracked</td><td class="mono">6–10 days</td><td class="mono">$68</td><td class="mono">$146</td></tr>
+        <tr><td>Rest of world</td><td>Air, tracked</td><td class="mono">8–16 days</td><td class="mono">$86</td><td class="mono">$178</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="band" id="consign">
+  <div class="band-head">
+    <p class="eyebrow">Trade &amp; consignment</p>
+    <h2>Clearing an estate, or buying for a shop?</h2>
+    <p>
+      I take consignments on a 30% commission and buy outright where a lot suits
+      the catalogue. Dealers buying three pieces or more get trade terms. Tell me
+      what you have and I will come back within two business days.
+    </p>
+  </div>
+  <form class="trio" id="lead-form" style="align-items:start">
+    <div class="field">
+      <label for="lead-name">Your name</label>
+      <input id="lead-name" name="name" autocomplete="name" required>
+    </div>
+    <div class="field">
+      <label for="lead-email">Email</label>
+      <input id="lead-email" name="email" type="email" autocomplete="email" required>
+    </div>
+    <div class="field">
+      <label for="lead-kind">What brings you here</label>
+      <select id="lead-kind" name="kind">
+        <option value="consign">I have pieces to consign</option>
+        <option value="estate">I am clearing an estate</option>
+        <option value="trade">I buy for a shop or trade</option>
+        <option value="interior">I am sourcing for a client project</option>
+        <option value="sell">I want to sell outright</option>
+      </select>
+    </div>
+    <div class="field" style="grid-column:1/-1">
+      <label for="lead-note">What have you got?</label>
+      <input id="lead-note" name="note" placeholder="A dozen pieces of mid-century teak, a jewellery box, two rugs…">
+    </div>
+    <div style="grid-column:1/-1;display:grid;gap:10px;max-width:340px">
+      <button class="btn btn-primary" type="submit">Send it over</button>
+      <p class="secure-note" id="lead-status" style="justify-content:flex-start" hidden></p>
+    </div>
+  </form>
+</section>
+
+<footer class="site-foot">
+  <div class="foot-cols">
+    <div class="foot-col">
+      <h4>Hammer &amp; Hearth</h4>
+      <p>Single-lot antiques and furniture, bought at auction and catalogued honestly.</p>
+    </div>
+    <div class="foot-col">
+      <h4 data-t="navCatalogue">Catalogue</h4>
+      <a href="#catalogue">All lots</a>
+      <a href="#how" data-t="navHow">How it works</a>
+      <a href="#shipping" data-t="navShipping">Shipping &amp; returns</a>
+    </div>
+    <div class="foot-col">
+      <h4 data-t="paymentStep">Payment</h4>
+      <p>All major cards, wallets, and buy-now-pay-later where it settles.</p>
+      <p>44 currencies · 32 languages</p>
+    </div>
+    <div class="foot-col">
+      <h4 data-t="navContact">Contact</h4>
+      <a href="#consign">Consign or sell</a>
+      <a href="#consign">Trade enquiries</a>
+    </div>
+  </div>
+
+  <div class="legal">
+    <p class="copyright">© Pamela Logan 2020-2026: All rights reserved. Unauthorized use and/or duplication of this material without express and written permission is strictly prohibited.</p>
+    <p>No part of this publication may be reproduced, distributed, or transmitted in any form or by any means without the prior written permission of the copyright holder.</p>
+  </div>
+</footer>
+
+<button class="assistant-open" id="assistant-open" type="button">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+    <path d="M21 12a8 8 0 0 1-8 8H7l-4 3v-6a8 8 0 0 1 8-8h2a8 8 0 0 1 8 3z"/>
+  </svg>
+  <span data-t="assistantTitle">Ask the curator</span>
+</button>
+
+<!-- Lot detail / cart / checkout -->
+<div class="scrim" id="scrim" hidden></div>
+<section class="panel" id="panel" hidden role="dialog" aria-modal="true" aria-labelledby="panel-title">
+  <div class="panel-head">
+    <h2 id="panel-title">Lot</h2>
+    <button class="icon-btn" id="panel-close" type="button" aria-label="Close">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="panel-scroll" id="panel-body"></div>
+  <div class="panel-foot" id="panel-foot" hidden></div>
+</section>
+
+<!-- Curator -->
+<div class="scrim" id="assistant-scrim" hidden></div>
+<section class="panel" id="assistant-modal" hidden role="dialog" aria-modal="true" aria-labelledby="assistant-heading">
+  <div class="panel-head">
+    <h2 id="assistant-heading" data-t="assistantTitle">Ask the curator</h2>
+    <button class="icon-btn" id="assistant-close" type="button" aria-label="Close">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="panel-scroll">
+    <div class="chat-log" id="chat-log"></div>
+  </div>
+  <div class="panel-foot">
+    <div class="chip-row" id="chat-seeds"></div>
+    <form class="composer" id="chat-form">
+      <label class="visually-hidden" for="chat-input" data-t="assistantPrompt">Ask about a lot</label>
+      <input id="chat-input" data-t-ph="assistantPrompt" placeholder="Ask about a lot, sizing, shipping…" autocomplete="off">
+      <button class="btn btn-primary" type="submit">Ask</button>
+    </form>
+  </div>
+</section>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script type="module">
+  import { boot } from "./assets/js/store.js";
+  boot();
+
+  // Trade and consignment enquiries. With a server configured these post to
+  // /api/leads, where agents/gtm_leads.py scores and routes them; without one
+  // the form acknowledges locally so the page still behaves.
+  const form = document.querySelector("#lead-form");
+  const status = document.querySelector("#lead-status");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const lead = Object.fromEntries(new FormData(form).entries());
+    const base = window.HH_CONFIG.apiBase;
+    status.hidden = false;
+    status.textContent = "Sending…";
+    try {
+      if (base) {
+        const r = await fetch(`${base}/api/leads`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(lead),
+        });
+        if (!r.ok) throw new Error(String(r.status));
+      }
+      status.textContent = `Thanks, ${lead.name.split(" ")[0] || "and"} — I'll come back to ${lead.email} within two business days.`;
+      form.reset();
+    } catch {
+      status.textContent = "That didn't send. Email consign@hammerandhearth.example instead and I'll pick it up.";
+    }
+  });
+</script>
+
+</body>
+</html>
