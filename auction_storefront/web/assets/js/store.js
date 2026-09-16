@@ -1,8 +1,17 @@
 /* store.js — catalogue rendering, cart state, and the slide-over panel that
- * carries the lot detail, the cart and the checkout flow. */
+ * carries the lot detail, the cart, checkout and the enquiry flow.
+ *
+ * Fulfilment drives everything downstream of "add to cart":
+ *   ship / freight — a normal cart line, priced at the full hammer price
+ *   collect        — the cart line is the DEPOSIT, not the price; the balance
+ *                     is due on collection and stated everywhere so nobody is
+ *                     surprised by it
+ *   enquiry        — never enters a cart. Opens a private-treaty enquiry form
+ *                     instead, because a house does not check out like a teapot
+ */
 
 import { i18n } from "./i18n.js";
-import { LOTS, CATEGORIES, GRADES, plate } from "./catalog.js";
+import { LOTS, DEPARTMENTS, CATEGORIES, DEPT_OF, GRADES, FULFILMENT, glyph } from "./catalog.js";
 import { renderPayment, placeOrder, mountStripeElement } from "./checkout.js";
 import { mountAssistant, openAssistant } from "./assistant.js";
 
@@ -12,6 +21,7 @@ const TAX_RATE = 0.0825;
 
 export const state = {
   query: "",
+  dept: "all",
   cat: "all",
   grade: "all",
   sort: "new",
@@ -30,12 +40,22 @@ function loadCart() {
 }
 
 function saveCart() {
-  try { localStorage.setItem(CART_KEY, JSON.stringify(state.cart)); } catch { /* ignore */ }
+  try {
+    localStorage.setItem(CART_KEY, JSON.stringify(state.cart));
+  } catch {
+    /* ignore */
+  }
 }
 
 const $ = (sel) => document.querySelector(sel);
-const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const esc = (s) =>
+  String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const gradeOf = (code) => GRADES.find((g) => g.code === code) || GRADES[2];
+
+/** What a cart line actually charges now — full price, or a deposit. */
+function chargeNow(lot) {
+  return lot.fulfilment === "collect" ? lot.depositUsd : lot.priceUsd;
+}
 
 /* ------------------------------------------------------------------ cart */
 
@@ -46,10 +66,33 @@ export function cartLines() {
 }
 
 export function totals() {
-  const subtotal = cartLines().reduce((sum, l) => sum + l.lot.priceUsd * l.qty, 0);
-  const shipping = subtotal > 0 ? SHIPPING_USD : 0;
-  const tax = subtotal * TAX_RATE;
-  return { subtotal, shipping, tax, total: subtotal + shipping + tax };
+  const lines = cartLines();
+  const subtotal = lines.reduce((sum, l) => sum + chargeNow(l.lot) * l.qty, 0);
+  const balanceDue = lines.reduce(
+    (sum, l) => sum + (l.lot.fulfilment === "collect" ? (l.lot.priceUsd - l.lot.depositUsd) * l.qty : 0),
+    0
+  );
+  // A flat shipping line only makes sense for small parcels. Freight is
+  // quoted after checkout; collection has no shipping leg at all.
+  const shippable = lines.some((l) => l.lot.fulfilment === "ship");
+  const hasFreight = lines.some((l) => l.lot.fulfilment === "freight");
+  const shipping = shippable ? SHIPPING_USD : 0;
+  // Vehicle sales tax is collected at title transfer against the full price,
+  // not by this checkout against a refundable booking deposit — so a
+  // collection-lot deposit is excluded from what's taxed here.
+  const taxable = lines.reduce(
+    (sum, l) => sum + (l.lot.fulfilment === "collect" ? 0 : chargeNow(l.lot) * l.qty),
+    0
+  );
+  const tax = taxable * TAX_RATE;
+  return {
+    subtotal,
+    shipping,
+    tax,
+    total: subtotal + shipping + tax,
+    balanceDue,
+    hasFreight,
+  };
 }
 
 export function cartCount() {
@@ -91,12 +134,12 @@ function paintCount() {
 
 function visibleLots() {
   const q = state.query.trim().toLowerCase();
-  let rows = LOTS.filter((lot) => {
+  const rows = LOTS.filter((lot) => {
+    if (state.dept !== "all" && DEPT_OF[lot.cat] !== state.dept) return false;
     if (state.cat !== "all" && lot.cat !== state.cat) return false;
     if (state.grade !== "all" && !lot.grade.startsWith(state.grade)) return false;
     if (!q) return true;
-    return [lot.title, lot.era, lot.house, lot.note, lot.lot]
-      .join(" ").toLowerCase().includes(q);
+    return [lot.title, lot.era, lot.house, lot.note, lot.lot].join(" ").toLowerCase().includes(q);
   });
 
   const by = {
@@ -107,21 +150,35 @@ function visibleLots() {
   return rows.sort(by);
 }
 
-function lotCard(lot) {
+function fulfilmentBadge(lot) {
+  const f = FULFILMENT[lot.fulfilment];
+  return `<span class="fulfil-tag fulfil-${lot.fulfilment}">${esc(f.short)}</span>`;
+}
+
+function lotCard(lot, index) {
   const g = gradeOf(lot.grade);
   const belowEstimate = lot.priceUsd < lot.estHigh;
+  const priceLine =
+    lot.fulfilment === "collect"
+      ? `<span class="lot-price">${i18n.price(lot.depositUsd)}<i>deposit</i></span>`
+      : lot.fulfilment === "enquiry"
+        ? `<span class="lot-price lot-price-poa">${i18n.t("priceOnEnquiry")}</span>`
+        : `<span class="lot-price">${i18n.price(lot.priceUsd)}</span>`;
+
   return `
-    <button class="lot" type="button" data-lot="${lot.id}">
-      <div class="plate">
-        ${plate(lot.cat)}
+    <button class="lot" type="button" data-lot="${lot.id}" style="--stagger:${index % 12}">
+      <div class="plate plate-${lot.cat}">
+        <span class="plate-sheen"></span>
+        ${glyph(lot.cat)}
         <span class="plate-tag">${i18n.t("lotNo")} ${lot.lot}</span>
-        ${belowEstimate ? `<span class="plate-flag">Under estimate</span>` : ""}
+        ${fulfilmentBadge(lot)}
+        ${belowEstimate && lot.fulfilment !== "enquiry" ? `<span class="plate-flag">Under estimate</span>` : ""}
       </div>
       <div class="lot-body">
         <span class="lot-title">${esc(lot.title)}</span>
         <span class="lot-meta">${esc(lot.era)} · ${esc(lot.house)}</span>
         <span class="lot-foot">
-          <span class="lot-price">${i18n.price(lot.priceUsd)}</span>
+          ${priceLine}
           <span class="grade ${g.cls}">${g.code} · ${esc(g.label)}</span>
         </span>
       </div>
@@ -132,7 +189,7 @@ export function renderCatalogue() {
   const rows = visibleLots();
   $("#lot-grid").innerHTML = rows.length
     ? rows.map(lotCard).join("")
-    : `<p class="empty-state">No lots match that. Try widening the category or clearing the search.</p>`;
+    : `<p class="empty-state">No lots match that. Try widening the department or clearing the search.</p>`;
   $("#results-count").textContent = `${rows.length} ${i18n.t("results")}`;
 }
 
@@ -140,12 +197,13 @@ export function renderCatalogue() {
 
 let lastFocus = null;
 
-export function openPanel({ title, body, footer }) {
+export function openPanel({ title, body, footer, wide }) {
   lastFocus = document.activeElement;
   $("#panel-title").textContent = title;
   $("#panel-body").innerHTML = body;
   $("#panel-foot").innerHTML = footer || "";
   $("#panel-foot").hidden = !footer;
+  $("#panel").classList.toggle("panel-wide", Boolean(wide));
   $("#scrim").hidden = false;
   $("#panel").hidden = false;
   $("#panel-body").scrollTop = 0;
@@ -160,38 +218,109 @@ export function closePanel() {
   if (lastFocus) lastFocus.focus();
 }
 
+/** The extra spec table a vehicle, property or tiny-home lot carries. */
+function specRows(lot) {
+  if (!lot.specs) return "";
+  return lot.specs.map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("");
+}
+
+function fulfilmentNote(lot) {
+  if (lot.fulfilment === "ship") return null;
+  if (lot.fulfilment === "freight")
+    return "Too large for parcel courier. Palletised freight is quoted after checkout — nothing moves until you approve the cost.";
+  if (lot.fulfilment === "collect")
+    return `A ${i18n.price(lot.depositUsd)} deposit reserves it. The balance, ${i18n.price(lot.priceUsd - lot.depositUsd)}, is due on collection or on the day of inspection — whichever you arrange.`;
+  return "Sold by private treaty, not by cart. Register your interest and the details go straight to the owner.";
+}
+
 function openLot(id) {
   const lot = LOTS.find((l) => l.id === id);
   if (!lot) return;
   const g = gradeOf(lot.grade);
   const inCart = state.cart.some((l) => l.id === id);
+  const note = fulfilmentNote(lot);
 
   openPanel({
     title: `${i18n.t("lotNo")} ${lot.lot}`,
+    wide: Boolean(lot.specs),
     body: `
-      <div class="plate detail-plate">
-        ${plate(lot.cat)}
+      <div class="plate detail-plate plate-${lot.cat}">
+        <span class="plate-sheen"></span>
+        ${glyph(lot.cat)}
         <span class="plate-tag">${esc(lot.era)}</span>
         <span class="plate-flag">${esc(g.label)}</span>
       </div>
       <h2 class="detail-title">${esc(lot.title)}</h2>
       <p class="detail-lede">${esc(lot.note)}</p>
+      ${note ? `<div class="callout">${note}</div>` : ""}
       <table class="spec-table">
         <tbody>
-          <tr><th>${i18n.t("estimate")}</th><td>${i18n.price(lot.estLow)} – ${i18n.price(lot.estHigh)}</td></tr>
+          ${lot.fulfilment === "enquiry" ? "" : `<tr><th>${i18n.t("estimate")}</th><td>${i18n.price(lot.estLow)} – ${i18n.price(lot.estHigh)}</td></tr>`}
           <tr><th>${i18n.t("provenance")}</th><td>${esc(lot.house)} · ${esc(lot.sale)}</td></tr>
           <tr><th>${i18n.t("condition")}</th><td>${g.code} · ${esc(g.label)}</td></tr>
           <tr><th>${i18n.t("dimensions")}</th><td>${esc(lot.dims)}</td></tr>
-          <tr><th>Weight</th><td>${esc(lot.weight)}</td></tr>
+          ${lot.weight ? `<tr><th>Weight</th><td>${esc(lot.weight)}</td></tr>` : ""}
+          ${specRows(lot)}
           <tr><th>Listed</th><td>${i18n.date(lot.listed)}</td></tr>
           <tr><th>Availability</th><td>One only — not restockable</td></tr>
         </tbody>
       </table>`,
-    footer: `
-      <button class="btn btn-primary" data-add="${lot.id}">
-        ${inCart ? i18n.t("added") : i18n.t("addToCart")} · ${i18n.price(lot.priceUsd)}
-      </button>
-      <button class="btn" data-ask="${lot.id}">${i18n.t("assistantTitle")}</button>`,
+    footer:
+      lot.fulfilment === "enquiry"
+        ? `<button class="btn btn-primary" data-enquire="${lot.id}">${i18n.t("registerInterest")}</button>
+           <button class="btn" data-ask="${lot.id}">${i18n.t("assistantTitle")}</button>`
+        : `<button class="btn btn-primary" data-add="${lot.id}">
+             ${inCart ? i18n.t("added") : i18n.t("addToCart")} · ${i18n.price(chargeNow(lot))}${lot.fulfilment === "collect" ? ` <i>deposit</i>` : ""}
+           </button>
+           <button class="btn" data-ask="${lot.id}">${i18n.t("assistantTitle")}</button>`,
+  });
+}
+
+function openEnquiry(id) {
+  const lot = LOTS.find((l) => l.id === id);
+  if (!lot) return;
+
+  openPanel({
+    title: i18n.t("registerInterest"),
+    body: `
+      <p class="detail-lede">${esc(lot.title)} — ${i18n.price(lot.priceUsd)}. This does not book a viewing
+        or hold the lot; it opens a conversation with the owner, who replies personally.</p>
+      <div class="field">
+        <label for="enq-name">${i18n.t("fullName")}</label>
+        <input id="enq-name" autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="enq-email">${i18n.t("email")}</label>
+        <input id="enq-email" type="email" autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="enq-note">What would you like to know?</label>
+        <input id="enq-note" placeholder="A viewing time, the legal pack, financing…">
+      </div>
+      <span class="field-error" id="err-enquiry" hidden>Add your name and email so the owner can reply.</span>`,
+    footer: `<button class="btn btn-primary" data-send-enquiry="${lot.id}">${i18n.t("continue")}</button>`,
+  });
+}
+
+function submitEnquiry(id) {
+  const name = $("#enq-name").value.trim();
+  const email = $("#enq-email").value.trim();
+  const ok = name && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  $("#err-enquiry").hidden = ok;
+  if (!ok) return;
+
+  const lot = LOTS.find((l) => l.id === id);
+  openPanel({
+    title: i18n.t("registerInterest"),
+    body: `
+      <div class="receipt">
+        <span class="seal"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="1.6" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></span>
+        <h2>Sent</h2>
+        <p>The owner has your enquiry about lot ${lot.lot} and will reply to <b>${esc(email)}</b>
+          within two business days.</p>
+      </div>`,
+    footer: `<button class="btn" data-jump="#catalogue">Back to the catalogue</button>`,
   });
 }
 
@@ -200,15 +329,18 @@ export function openCart() {
   const t = totals();
 
   const body = lines.length
-    ? lines.map(({ lot, qty }) => `
+    ? lines
+        .map(({ lot, qty }) => {
+          const isDeposit = lot.fulfilment === "collect";
+          return `
         <div class="cart-line">
-          <div class="plate">${plate(lot.cat)}</div>
+          <div class="plate plate-${lot.cat}"><span class="plate-sheen"></span>${glyph(lot.cat)}</div>
           <div>
             <h4>${esc(lot.title)}</h4>
-            <p class="lot-meta">${i18n.t("lotNo")} ${lot.lot} · ${esc(lot.era)}</p>
+            <p class="lot-meta">${i18n.t("lotNo")} ${lot.lot} · ${fulfilmentBadge(lot)}</p>
           </div>
           <div class="cart-line-end">
-            <span class="lot-price">${i18n.price(lot.priceUsd * qty)}</span>
+            <span class="lot-price">${i18n.price(chargeNow(lot) * qty)}${isDeposit ? ` <i>deposit</i>` : ""}</span>
             <span class="qty">
               <button type="button" data-qty="${lot.id}" data-to="${qty - 1}" aria-label="Reduce quantity">−</button>
               <span>${qty}</span>
@@ -216,12 +348,16 @@ export function openCart() {
             </span>
             <button class="link-btn" data-qty="${lot.id}" data-to="0">${i18n.t("remove")}</button>
           </div>
-        </div>`).join("")
-      + `<div class="totals" style="margin-top:20px">
+        </div>`;
+        })
+        .join("") +
+      `<div class="totals" style="margin-top:20px">
           <div><span>${i18n.t("subtotal")}</span><span>${i18n.price(t.subtotal)}</span></div>
-          <div><span>${i18n.t("shipping")}</span><span>${i18n.price(t.shipping)}</span></div>
+          ${t.shipping ? `<div><span>${i18n.t("shipping")}</span><span>${i18n.price(t.shipping)}</span></div>` : ""}
+          ${t.hasFreight ? `<div><span>Freight</span><span>Quoted after checkout</span></div>` : ""}
           <div><span>${i18n.t("tax")}</span><span>${i18n.price(t.tax)}</span></div>
           <div class="grand"><span>${i18n.t("total")}</span><b>${i18n.price(t.total)}</b></div>
+          ${t.balanceDue ? `<div class="balance-note"><span>Balance due on collection</span><span>${i18n.price(t.balanceDue)}</span></div>` : ""}
          </div>`
     : `<p class="empty-state">${i18n.t("cartEmpty")}</p>`;
 
@@ -245,8 +381,9 @@ export function openCheckout(step = 0) {
   const t = totals();
   const o = state.order;
 
-  const tabs = `<div class="steps">${STEPS.map((k, i) =>
-    `<button class="step" type="button" data-step="${i}" ${i === step ? 'aria-current="step"' : ""}>${i + 1}. ${i18n.t(k)}</button>`
+  const tabs = `<div class="steps">${STEPS.map(
+    (k, i) =>
+      `<button class="step" type="button" data-step="${i}" ${i === step ? 'aria-current="step"' : ""}>${i + 1}. ${i18n.t(k)}</button>`
   ).join("")}</div>`;
 
   let form;
@@ -255,6 +392,7 @@ export function openCheckout(step = 0) {
       <div class="callout">
         <b>One of each.</b> Everything here is a single auction lot, so a cart holds
         it for 20 minutes. We email a condition addendum before anything ships.
+        ${t.balanceDue ? `A collection-lot deposit is charged now; the balance is due when you collect.` : ""}
       </div>
       <div class="field">
         <label for="co-email">${i18n.t("email")}</label>
@@ -285,8 +423,9 @@ export function openCheckout(step = 0) {
       <div class="field">
         <label for="co-country">${i18n.t("country")}</label>
         <select id="co-country" autocomplete="country">
-          ${i18n.countries.map((c) =>
-            `<option value="${c.code}"${c.code === o.country ? " selected" : ""}>${esc(c.name)}</option>`).join("")}
+          ${i18n.countries
+            .map((c) => `<option value="${c.code}"${c.code === o.country ? " selected" : ""}>${esc(c.name)}</option>`)
+            .join("")}
         </select>
       </div>
       <span class="field-error" id="err-address" hidden>Fill in the name, street, city and postal code.</span>`;
@@ -300,27 +439,28 @@ export function openCheckout(step = 0) {
       <div class="totals" style="margin-top:24px">
         <p class="eyebrow" style="margin-bottom:8px">${i18n.t("summary")}</p>
         <div><span>${i18n.t("subtotal")}</span><span>${i18n.price(t.subtotal)}</span></div>
-        <div><span>${i18n.t("shipping")}</span><span>${i18n.price(t.shipping)}</span></div>
+        ${t.shipping ? `<div><span>${i18n.t("shipping")}</span><span>${i18n.price(t.shipping)}</span></div>` : ""}
         <div><span>${i18n.t("tax")}</span><span>${i18n.price(t.tax)}</span></div>
         <div class="grand"><span>${i18n.t("total")}</span><b>${i18n.price(t.total)}</b></div>
       </div>`,
-    footer: step === 2
-      ? `<button class="btn btn-primary" data-pay="1">${i18n.t("payNow")} · ${i18n.price(t.total)}</button>
+    footer:
+      step === 2
+        ? `<button class="btn btn-primary" data-pay="1">${i18n.t("payNow")} · ${i18n.price(t.total)}</button>
          <p class="secure-note">${lockIcon()} ${i18n.t("secured")} · PCI DSS SAQ-A</p>`
-      : `<button class="btn btn-primary" data-step-next="${step}">${i18n.t("continue")}</button>`,
+        : `<button class="btn btn-primary" data-step-next="${step}">${i18n.t("continue")}</button>`,
   });
 
   if (step === 2) {
     mountStripeElement({ totals: t, order: state.order, cart: state.cart })
-      .then((handle) => { liveStripe = handle; })
+      .then((handle) => {
+        liveStripe = handle;
+      })
       .catch((err) => {
         liveStripe = null;
         console.warn("Falling back to demo checkout:", err.message);
       });
   }
 }
-
-
 
 function lockIcon() {
   return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -362,18 +502,36 @@ function fillControls() {
     .map((c) => `<option value="${c}"${c === i18n.currency ? " selected" : ""}>${c}</option>`)
     .join("");
 
-  $("#cat-list").innerHTML = [{ id: "all", label: i18n.t("all") }, ...CATEGORIES]
+  $("#dept-list").innerHTML = [{ id: "all", label: i18n.t("all") }, ...DEPARTMENTS]
+    .map((d) => {
+      const n = d.id === "all" ? LOTS.length : LOTS.filter((l) => DEPT_OF[l.cat] === d.id).length;
+      return `<button class="rail-opt" type="button" data-dept="${d.id}"
+        aria-pressed="${state.dept === d.id}">${esc(d.label)}<em>${n}</em></button>`;
+    })
+    .join("");
+
+  const catsInDept = state.dept === "all" ? CATEGORIES : CATEGORIES.filter((c) => c.dept === state.dept);
+  $("#cat-list").innerHTML = [{ id: "all", label: i18n.t("all") }, ...catsInDept]
     .map((c) => {
-      const n = c.id === "all" ? LOTS.length : LOTS.filter((l) => l.cat === c.id).length;
+      const n = c.id === "all" ? catsInDept.reduce((s, x) => s + LOTS.filter((l) => l.cat === x.id).length, 0) : LOTS.filter((l) => l.cat === c.id).length;
       return `<button class="rail-opt" type="button" data-cat="${c.id}"
         aria-pressed="${state.cat === c.id}">${esc(c.label)}<em>${n}</em></button>`;
-    }).join("");
+    })
+    .join("");
 
   $("#grade-list").innerHTML = [{ code: "all", label: i18n.t("all") }, ...GRADES]
-    .map((g) => `<button class="rail-opt" type="button" data-grade="${g.code}"
-      aria-pressed="${state.grade === g.code}">${esc(g.label)}</button>`).join("");
+    .map(
+      (g) =>
+        `<button class="rail-opt" type="button" data-grade="${g.code}"
+      aria-pressed="${state.grade === g.code}">${esc(g.label)}</button>`
+    )
+    .join("");
 
-  $("#sort-select").innerHTML = [["new", "sortNew"], ["low", "sortLow"], ["high", "sortHigh"]]
+  $("#sort-select").innerHTML = [
+    ["new", "sortNew"],
+    ["low", "sortLow"],
+    ["high", "sortHigh"],
+  ]
     .map(([v, k]) => `<option value="${v}"${state.sort === v ? " selected" : ""}>${i18n.t(k)}</option>`)
     .join("");
 }
@@ -393,19 +551,62 @@ export function applyTranslations() {
 
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
-  try { localStorage.setItem("hh.theme", theme); } catch { /* ignore */ }
+  try {
+    localStorage.setItem("hh.theme", theme);
+  } catch {
+    /* ignore */
+  }
   $("#theme-toggle").textContent = theme === "dark" ? "Light" : "Dark";
+}
+
+/** Reveal-on-scroll for elements marked [data-reveal]. Respects reduced motion. */
+function mountScrollReveal() {
+  const targets = document.querySelectorAll("[data-reveal]");
+  if (!targets.length) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    targets.forEach((el) => el.classList.add("is-visible"));
+    return;
+  }
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          io.unobserve(entry.target);
+        }
+      }
+    },
+    { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+  );
+  targets.forEach((el) => io.observe(el));
+}
+
+/** A gilt glow that tracks the pointer across the hero, cheap and GPU-friendly. */
+function mountHeroGlow() {
+  const hero = document.querySelector(".hero");
+  if (!hero || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  hero.addEventListener("pointermove", (e) => {
+    const r = hero.getBoundingClientRect();
+    hero.style.setProperty("--mx", `${((e.clientX - r.left) / r.width) * 100}%`);
+    hero.style.setProperty("--my", `${((e.clientY - r.top) / r.height) * 100}%`);
+  });
 }
 
 export function boot() {
   i18n.init();
 
   let theme = "dark";
-  try { theme = localStorage.getItem("hh.theme") || "dark"; } catch { /* ignore */ }
+  try {
+    theme = localStorage.getItem("hh.theme") || "dark";
+  } catch {
+    /* ignore */
+  }
   applyTheme(theme);
 
   applyTranslations();
   mountAssistant();
+  mountScrollReveal();
+  mountHeroGlow();
 
   $("#lang-select").addEventListener("change", (e) => {
     i18n.setLocale(e.target.value);
@@ -443,14 +644,36 @@ export function boot() {
   document.addEventListener("click", (e) => {
     const hit = (attr) => e.target.closest(`[${attr}]`);
 
+    const dept = hit("data-dept");
+    if (dept) {
+      state.dept = dept.dataset.dept;
+      state.cat = "all";
+      fillControls();
+      renderCatalogue();
+      return;
+    }
+
     const cat = hit("data-cat");
-    if (cat) { state.cat = cat.dataset.cat; fillControls(); renderCatalogue(); return; }
+    if (cat) {
+      state.cat = cat.dataset.cat;
+      fillControls();
+      renderCatalogue();
+      return;
+    }
 
     const grade = hit("data-grade");
-    if (grade) { state.grade = grade.dataset.grade; fillControls(); renderCatalogue(); return; }
+    if (grade) {
+      state.grade = grade.dataset.grade;
+      fillControls();
+      renderCatalogue();
+      return;
+    }
 
     const lot = hit("data-lot");
-    if (lot) { openLot(lot.dataset.lot); return; }
+    if (lot) {
+      openLot(lot.dataset.lot);
+      return;
+    }
 
     const add = hit("data-add");
     if (add) {
@@ -460,19 +683,47 @@ export function boot() {
       return;
     }
 
+    const enquire = hit("data-enquire");
+    if (enquire) {
+      openEnquiry(enquire.dataset.enquire);
+      return;
+    }
+
+    const sendEnquiry = hit("data-send-enquiry");
+    if (sendEnquiry) {
+      submitEnquiry(sendEnquiry.dataset.sendEnquiry);
+      return;
+    }
+
     const ask = hit("data-ask");
-    if (ask) { closePanel(); openAssistant(LOTS.find((l) => l.id === ask.dataset.ask)); return; }
+    if (ask) {
+      closePanel();
+      openAssistant(LOTS.find((l) => l.id === ask.dataset.ask));
+      return;
+    }
 
     const qty = hit("data-qty");
-    if (qty) { setQty(qty.dataset.qty, Number(qty.dataset.to)); return; }
+    if (qty) {
+      setQty(qty.dataset.qty, Number(qty.dataset.to));
+      return;
+    }
 
-    if (hit("data-checkout")) { openCheckout(0); return; }
+    if (hit("data-checkout")) {
+      openCheckout(0);
+      return;
+    }
 
     const stepTab = hit("data-step");
-    if (stepTab) { openCheckout(Number(stepTab.dataset.step)); return; }
+    if (stepTab) {
+      openCheckout(Number(stepTab.dataset.step));
+      return;
+    }
 
     const next = hit("data-step-next");
-    if (next) { commitStep(Number(next.dataset.stepNext)); return; }
+    if (next) {
+      commitStep(Number(next.dataset.stepNext));
+      return;
+    }
 
     const method = hit("data-method");
     if (method) {
@@ -496,6 +747,9 @@ export function boot() {
     }
 
     const jump = hit("data-jump");
-    if (jump) { closePanel(); document.querySelector(jump.dataset.jump)?.scrollIntoView({ behavior: "smooth" }); }
+    if (jump) {
+      closePanel();
+      document.querySelector(jump.dataset.jump)?.scrollIntoView({ behavior: "smooth" });
+    }
   });
 }

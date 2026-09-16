@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hammer &amp; Hearth</title>
-<meta name="description" content="Single-lot antiques, jewellery and furniture bought at auction and catalogued honestly. Ships worldwide, 44 currencies, 32 languages.">
+<meta name="description" content="Single-lot antiques, vehicles, property and electronics bought at auction and catalogued honestly. Ships worldwide, 44 currencies, 32 languages.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Bodoni+Moda:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -63,23 +63,61 @@
 
 <section class="hero">
   <div>
-    <p class="eyebrow">Sale rooms, estate clearances, county auction barns</p>
+    <p class="eyebrow">Sale rooms, estate clearances, county auction barns, fleet disposals</p>
     <h1>Bought at the block.<br>Sold with <em>the faults written down.</em></h1>
-    <p>
-      Every piece here came out of a real auction with a lot number attached to it.
-      I keep that number, name the sale room it came from, and photograph what is
-      wrong with it before I photograph what is right. There is one of each.
+    <p class="lede">
+      Every lot here came out of a real auction with a lot number attached to it —
+      a Georgian teapot, a Leica, a 1972 Mercedes, a three-bedroom house in probate.
+      I keep that number, name the sale room it came from, and describe what is
+      wrong with it before what is right. There is one of each.
     </p>
   </div>
   <div class="hero-stats">
-    <div class="hero-stat"><b>24</b><span>lots in the current catalogue</span></div>
+    <div class="hero-stat"><b>47</b><span>lots across 7 departments</span></div>
     <div class="hero-stat"><b>6</b><span>condition grades, applied strictly</span></div>
-    <div class="hero-stat"><b>14</b><span>day returns, grades A through C</span></div>
+    <div class="hero-stat"><b>32</b><span>languages, 44 currencies</span></div>
+  </div>
+</section>
+
+<section class="dept-strip" data-reveal="stagger" aria-label="Departments">
+  <div class="dept-grid">
+    <a class="dept-tile" href="#catalogue" data-dept="interiors" style="--dc:var(--dept-interiors)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9h12v6H6z"/><path d="M4 15h16v3H4zM7 18v3M17 18v3"/></svg>
+      <b>Interiors &amp; Antiques</b><span>Furniture, ceramics, silver, glass, rugs</span><em>13</em>
+    </a>
+    <a class="dept-tile" href="#catalogue" data-dept="adornment" style="--dc:var(--dept-adornment)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="15" r="6"/><path d="M12 3l3 4-3 4-3-4z"/></svg>
+      <b>Jewellery &amp; Watches</b><span>Estate jewellery, horology, silver</span><em>5</em>
+    </a>
+    <a class="dept-tile" href="#catalogue" data-dept="culture" style="--dc:var(--dept-culture)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="15" rx="1"/><path d="M3 14l5-6 4 4 3-3 6 7"/></svg>
+      <b>Art &amp; Collectables</b><span>Prints, maps, books, coins, instruments</span><em>6</em>
+    </a>
+    <a class="dept-tile" href="#catalogue" data-dept="tech" style="--dc:var(--dept-tech)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="11" rx="1"/><path d="M1 19h22l-2-3H3z"/></svg>
+      <b>Electronics &amp; Computing</b><span>Audio, cameras, computers, phones</span><em>12</em>
+    </a>
+    <a class="dept-tile" href="#catalogue" data-dept="vehicles" style="--dc:var(--dept-vehicles)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 15h18v4H3z"/><path d="M5 15l2-6h10l2 6"/><circle cx="7.5" cy="19" r="2"/><circle cx="16.5" cy="19" r="2"/></svg>
+      <b>Vehicles</b><span>Cars, motorcycles, commercial — collection only</span><em>5</em>
+    </a>
+    <a class="dept-tile" href="#catalogue" data-dept="property" style="--dc:var(--dept-property)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 11v9h14v-9"/><rect x="10" y="15" width="4" height="5"/></svg>
+      <b>Property &amp; Land</b><span>Houses, plots, commercial — by enquiry</span><em>4</em>
+    </a>
+    <a class="dept-tile" href="#catalogue" data-dept="tinyhomes" style="--dc:var(--dept-tinyhomes)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 11l8-6 8 6"/><path d="M6 11v8h12v-8"/><circle cx="8" cy="21" r="1.6"/><circle cx="16" cy="21" r="1.6"/></svg>
+      <b>Tiny Homes</b><span>Trailer-built houses, delivered by freight</span><em>2</em>
+    </a>
   </div>
 </section>
 
 <main class="catalogue" id="catalogue">
   <aside class="rail">
+    <div class="rail-group">
+      <h3>Department</h3>
+      <div id="dept-list"></div>
+    </div>
     <div class="rail-group">
       <h3 data-t="category">Category</h3>
       <div id="cat-list"></div>
@@ -104,7 +142,7 @@
   </div>
 </main>
 
-<section class="band" id="how">
+<section class="band" id="how" data-reveal>
   <div class="band-head">
     <p class="eyebrow">How it works</p>
     <h2>Three steps, and the second one is the whole business.</h2>
@@ -113,46 +151,65 @@
       is what gets written down between the sale room and the shelf.
     </p>
   </div>
-  <div class="trio">
-    <div class="trio-item">
+  <div class="trio" data-reveal="stagger">
+    <div class="trio-item" style="--stagger:0">
       <h3>Bought at the block</h3>
       <p>
-        I bid in person at regional sale rooms and estate clearances. The lot
-        number, the sale and the house stay attached to the piece for life — you
-        can see all three on every listing.
+        I bid in person at regional sale rooms, estate clearances and fleet
+        disposals. The lot number, the sale and the house stay attached to the
+        piece for life — you can see all three on every listing.
       </p>
     </div>
-    <div class="trio-item">
+    <div class="trio-item" style="--stagger:1">
       <h3>Graded against a fixed scale</h3>
       <p>
-        A to D, applied the same way every time. Grade D means "as found" and is
-        priced as a project, not as a bargain. Faults go in the lot note in plain
-        language: the dent, the hairline, the two missing marcasites.
+        A to D, applied the same way whether it is a teapot or a Mercedes.
+        Grade D means "as found" and is priced as a project. Faults go in the
+        lot note in plain language: the dent, the hairline, the cambelt history.
       </p>
     </div>
-    <div class="trio-item">
-      <h3>Packed for the object, not the box</h3>
+    <div class="trio-item" style="--stagger:2">
+      <h3>Fulfilled for what it is</h3>
       <p>
-        Glass double-boxed, textiles rolled not folded, furniture palletised and
-        quoted separately. Tracked and insured for the full purchase price, every
-        time, with the real value on the customs form.
+        Small pieces ship. Furniture goes by quoted freight. Cars and motorcycles
+        are collection only, against a deposit. Property is sold by private
+        treaty — never through a cart.
       </p>
     </div>
   </div>
 </section>
 
-<section class="band" id="shipping">
+<section class="band" id="shipping" data-reveal>
   <div class="band-head">
-    <p class="eyebrow" data-t="navShipping">Shipping</p>
-    <h2>What it costs to get it to you.</h2>
+    <p class="eyebrow" data-t="navShipping">Shipping &amp; fulfilment</p>
+    <h2>Four ways a lot reaches you, because one box doesn't fit a house.</h2>
     <p>
-      Rates below are for lots under 20 kg. Anything heavier is quoted as freight
-      after checkout, and nothing moves until you approve the number.
+      Small pieces ship by courier. Furniture and tiny homes go by quoted freight.
+      Vehicles are collection only, against a deposit. Property is sold by private
+      treaty and never touches a cart at all.
     </p>
+  </div>
+  <div class="trio" data-reveal="stagger" style="margin-bottom:32px">
+    <div class="trio-item" style="--stagger:0">
+      <h3>Shipped</h3>
+      <p>Tracked and insured courier, charged at checkout. Rates below are for lots under 20 kg.</p>
+    </div>
+    <div class="trio-item" style="--stagger:1">
+      <h3>Freight</h3>
+      <p>Furniture, pallets and tiny homes. Quoted after checkout — nothing moves until you approve the cost.</p>
+    </div>
+    <div class="trio-item" style="--stagger:2">
+      <h3>Collection</h3>
+      <p>Cars, motorcycles and commercial vehicles. A deposit reserves it; the balance is due when you collect.</p>
+    </div>
+    <div class="trio-item" style="--stagger:3">
+      <h3>Private treaty</h3>
+      <p>Property and land. Register your interest and the owner replies directly — no cart, no deposit online.</p>
+    </div>
   </div>
   <div class="table-wrap">
     <table class="ledger">
-      <caption>Indicative rates, insured to the full purchase price. Duty and import VAT are the buyer's, outside the US.</caption>
+      <caption>Courier rates for shipped lots under 20 kg, insured to the full purchase price. Duty and import VAT are the buyer's, outside the US.</caption>
       <thead>
         <tr><th scope="col">Destination</th><th scope="col">Service</th><th scope="col">In transit</th><th scope="col">Under 5 kg</th><th scope="col">5–20 kg</th></tr>
       </thead>
@@ -169,7 +226,7 @@
   </div>
 </section>
 
-<section class="band" id="consign">
+<section class="band" id="consign" data-reveal>
   <div class="band-head">
     <p class="eyebrow">Trade &amp; consignment</p>
     <h2>Clearing an estate, or buying for a shop?</h2>
@@ -195,6 +252,8 @@
         <option value="estate">I am clearing an estate</option>
         <option value="trade">I buy for a shop or trade</option>
         <option value="interior">I am sourcing for a client project</option>
+        <option value="vehicle">I have a car, bike or commercial vehicle</option>
+        <option value="property">I have a property or land to list</option>
         <option value="sell">I want to sell outright</option>
       </select>
     </div>
@@ -213,13 +272,13 @@
   <div class="foot-cols">
     <div class="foot-col">
       <h4>Hammer &amp; Hearth</h4>
-      <p>Single-lot antiques and furniture, bought at auction and catalogued honestly.</p>
+      <p>Single-lot antiques, vehicles, property and electronics, bought at auction and catalogued honestly.</p>
     </div>
     <div class="foot-col">
       <h4 data-t="navCatalogue">Catalogue</h4>
       <a href="#catalogue">All lots</a>
       <a href="#how" data-t="navHow">How it works</a>
-      <a href="#shipping" data-t="navShipping">Shipping &amp; returns</a>
+      <a href="#shipping" data-t="navShipping">Shipping &amp; fulfilment</a>
     </div>
     <div class="foot-col">
       <h4 data-t="paymentStep">Payment</h4>
@@ -230,6 +289,12 @@
       <h4 data-t="navContact">Contact</h4>
       <a href="#consign">Consign or sell</a>
       <a href="#consign">Trade enquiries</a>
+    </div>
+    <div class="foot-col">
+      <h4>Legal</h4>
+      <a href="terms.html">Terms of sale</a>
+      <a href="privacy.html">Privacy policy</a>
+      <a href="returns.html">Returns &amp; condition policy</a>
     </div>
   </div>
 
