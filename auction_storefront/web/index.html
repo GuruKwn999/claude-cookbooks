@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Hammer &amp; Hearth</title>
+<title>Pamela Y. Logan Industries</title>
 <meta name="description" content="Single-lot antiques, vehicles, property and electronics bought at auction and catalogued honestly. Ships worldwide, 44 currencies, 32 languages.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +17,7 @@
 <!-- Fill these in to go live. Empty values keep the shop in demo mode:
      the catalogue, cart and curator all work, but no money moves. -->
 <script>
-  window.HH_CONFIG = {
+  window.PYLI_CONFIG = {
     stripeKey: "",       // pk_live_… — publishable key only, never the secret
     paypalClientId: "",  // PayPal REST client id
     apiBase: "",         // e.g. "https://api.yourshop.com" — see server/main.py
@@ -37,7 +37,7 @@
 
 <header class="masthead">
   <a class="wordmark" href="#catalogue">
-    <b>Hammer</b><span>&amp;</span><b>Hearth</b>
+    <b>Pamela Y. Logan</b><span>Industries</span>
     <i data-t="tagline">Auction-sourced. One of each.</i>
   </a>
 
@@ -281,7 +281,7 @@
 <footer class="site-foot">
   <div class="foot-cols">
     <div class="foot-col">
-      <h4>Hammer &amp; Hearth</h4>
+      <h4>Pamela Y. Logan Industries</h4>
       <p>Single-lot antiques, vehicles, property and electronics, bought at auction and catalogued honestly.</p>
     </div>
     <div class="foot-col">
@@ -373,7 +373,7 @@
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const lead = Object.fromEntries(new FormData(form).entries());
-    const base = window.HH_CONFIG.apiBase;
+    const base = window.PYLI_CONFIG.apiBase;
     status.hidden = false;
     status.textContent = "Sending…";
     try {
@@ -388,7 +388,7 @@
       status.textContent = `Thanks, ${lead.name.split(" ")[0] || "and"} — I'll come back to ${lead.email} within two business days.`;
       form.reset();
     } catch {
-      status.textContent = "That didn't send. Email consign@hammerandhearth.example instead and I'll pick it up.";
+      status.textContent = "That didn't send. Email consign@pamelaylogan.example instead and I'll pick it up.";
     }
   });
 </script>

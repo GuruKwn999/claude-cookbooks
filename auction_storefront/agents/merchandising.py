@@ -30,7 +30,7 @@ from pydantic import BaseModel, Field
 MODEL = "claude-opus-5"
 CATALOG = json.loads((Path(__file__).parent.parent / "server" / "lots.json").read_text())
 
-SYSTEM = """You write listing copy for Hammer & Hearth, a one-person shop selling \
+SYSTEM = """You write listing copy for Pamela Y. Logan Industries, a one-person shop selling \
 single lots — mostly bought at regional auctions, plus a line of salvaged marine \
 and heavy-equipment parts verified by serial number — from teapots to houses to \
 engine blocks, across eight departments.

@@ -21,7 +21,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
-DB_PATH = Path(os.getenv("HH_DB_PATH", Path(__file__).parent / "hammer_and_hearth.db"))
+DB_PATH = Path(os.getenv("PYLI_DB_PATH", Path(__file__).parent / "pyli_industries.db"))
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS lot_state (

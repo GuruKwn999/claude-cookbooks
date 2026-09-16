@@ -35,7 +35,7 @@ from pydantic import BaseModel, Field
 
 MODEL = "claude-opus-5"
 
-SYSTEM = """You triage inbound enquiries for Hammer & Hearth, a one-person shop \
+SYSTEM = """You triage inbound enquiries for Pamela Y. Logan Industries, a one-person shop \
 that sources single lots — mostly bought at regional auctions, plus a smaller \
 line of parts salvaged from marine and heavy-equipment breakups and verified \
 by serial number — and resells them online. The owner handles every enquiry \

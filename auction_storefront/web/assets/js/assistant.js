@@ -1,6 +1,6 @@
 /* assistant.js — "Ask the curator", the storefront's commerce agent.
  *
- * LIVE  — window.HH_CONFIG.apiBase points at the reference server, which calls
+ * LIVE  — window.PYLI_CONFIG.apiBase points at the reference server, which calls
  *         Claude with the catalogue and a small tool set (search_lots,
  *         check_availability, quote_shipping). Keys stay server-side; the
  *         browser never sees one.
@@ -18,7 +18,7 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&l
 
 let history = [];
 
-const config = () => (typeof window !== "undefined" && window.HH_CONFIG) || {};
+const config = () => (typeof window !== "undefined" && window.PYLI_CONFIG) || {};
 
 /* ------------------------------------------------------- local retrieval */
 

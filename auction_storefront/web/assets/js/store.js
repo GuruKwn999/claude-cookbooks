@@ -15,7 +15,7 @@ import { LOTS, DEPARTMENTS, CATEGORIES, DEPT_OF, GRADES, FULFILMENT, glyph } fro
 import { renderPayment, placeOrder, mountStripeElement } from "./checkout.js";
 import { mountAssistant, openAssistant } from "./assistant.js";
 
-const CART_KEY = "hh.cart";
+const CART_KEY = "pyli.cart";
 const SHIPPING_USD = 28;
 const TAX_RATE = 0.0825;
 
@@ -581,7 +581,7 @@ export function applyTranslations() {
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
   try {
-    localStorage.setItem("hh.theme", theme);
+    localStorage.setItem("pyli.theme", theme);
   } catch {
     /* ignore */
   }
@@ -626,7 +626,7 @@ export function boot() {
 
   let theme = "dark";
   try {
-    theme = localStorage.getItem("hh.theme") || "dark";
+    theme = localStorage.getItem("pyli.theme") || "dark";
   } catch {
     /* ignore */
   }

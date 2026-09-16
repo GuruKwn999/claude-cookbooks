@@ -1,4 +1,4 @@
-/* i18n.js — UI localisation for the Hammer & Hearth storefront.
+/* i18n.js — UI localisation for the Pamela Y. Logan Industries storefront.
  *
  * Strings are stored as positional arrays against KEYS to keep the payload small.
  * To add a locale: append an entry to STRINGS with exactly KEYS.length values,
@@ -96,8 +96,8 @@ const COUNTRIES = "AF:Afghanistan|AL:Albania|DZ:Algeria|AD:Andorra|AO:Angola|AG:
 
 /* ---------------------------------------------------------------- runtime */
 
-const LOCALE_KEY = "hh.locale";
-const CURRENCY_KEY = "hh.currency";
+const LOCALE_KEY = "pyli.locale";
+const CURRENCY_KEY = "pyli.currency";
 
 function safeGet(key) {
   try { return localStorage.getItem(key); } catch { return null; }

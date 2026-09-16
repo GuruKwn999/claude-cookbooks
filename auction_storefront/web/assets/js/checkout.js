@@ -2,7 +2,7 @@
  *
  * Two modes, chosen at runtime:
  *
- *   LIVE  — window.HH_CONFIG.stripeKey is set and the reference server is
+ *   LIVE  — window.PYLI_CONFIG.stripeKey is set and the reference server is
  *           reachable. A PaymentIntent is created server-side with
  *           automatic_payment_methods enabled, and Stripe's Payment Element is
  *           mounted here. One integration covers every card network, the
@@ -95,7 +95,7 @@ function availableIn(country) {
   return METHODS.filter((m) => m.regions === "global" || m.regions.includes(country));
 }
 
-const config = () => (typeof window !== "undefined" && window.HH_CONFIG) || {};
+const config = () => (typeof window !== "undefined" && window.PYLI_CONFIG) || {};
 
 const instalment = (totalUsd) => i18n.price(totalUsd / 4);
 
@@ -238,7 +238,7 @@ export async function placeOrder({ totals: t, order: o, stripe: live, renderPane
           ${i18n.date(eta.toISOString())}.
         </p>
         <p class="eyebrow" style="margin-top:14px">
-          Demo mode — no payment was taken. Add your Stripe key to HH_CONFIG to go live.
+          Demo mode — no payment was taken. Add your Stripe key to PYLI_CONFIG to go live.
         </p>
       </div>`,
     footer: `<button class="btn" data-jump="#catalogue">Back to the catalogue</button>`,

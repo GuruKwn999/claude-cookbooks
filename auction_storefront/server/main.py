@@ -1,4 +1,4 @@
-"""Reference server for the Hammer & Hearth storefront.
+"""Reference server for the Pamela Y. Logan Industries storefront.
 
 Run it with:
 
@@ -10,7 +10,7 @@ deposit is not a teapot's price), the Claude call behind the curator, the
 webhook that marks a lot sold, and the admin API.
 
 The storefront works without this server — it falls back to a demo checkout and
-an on-page curator. Point web/index.html's HH_CONFIG.apiBase at this process to
+an on-page curator. Point web/index.html's PYLI_CONFIG.apiBase at this process to
 switch it on.
 """
 
@@ -70,7 +70,7 @@ ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "")
 
 claude = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY, or an `ant auth login` profile
 
-app = FastAPI(title="Hammer & Hearth")
+app = FastAPI(title="Pamela Y. Logan Industries")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[os.getenv("STOREFRONT_ORIGIN", "http://localhost:8000")],
@@ -400,7 +400,7 @@ async def stripe_webhook(request: Request) -> dict[str, str]:
 # ------------------------------------------------------------------ curator
 
 
-CURATOR_SYSTEM = """You are the curator of Hammer & Hearth, a one-person shop \
+CURATOR_SYSTEM = """You are the curator of Pamela Y. Logan Industries, a one-person shop \
 that sources single lots — mostly bought at regional auctions, plus a line of \
 salvaged marine and heavy-equipment parts verified by serial number — and \
 resells them across eight departments: antiques, jewellery, art, electronics, \

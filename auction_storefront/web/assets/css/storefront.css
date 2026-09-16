@@ -1,4 +1,4 @@
-/* Hammer & Hearth — storefront styles.
+/* Pamela Y. Logan Industries — storefront styles.
  * Dark-first: the bare :root block carries the complete dark palette (the house
  * look — a gallery at night, not a tech dashboard). An explicit light choice
  * (data-theme="light") swaps the same token set for a gallery by day.
@@ -204,6 +204,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .wordmark b {
   font-family: var(--display);
   font-size: 25px; font-weight: 600; letter-spacing: .01em;
+  white-space: nowrap;
 }
 .wordmark span { color: var(--gilt); font-size: 20px; }
 .wordmark i {

@@ -175,4 +175,4 @@ capabilities/content_moderation/evaluation/results.json
 /claude_agent_sdk/scheduled_repository_reviewer/demo_repo/
 
 # auction_storefront: runtime database (orders, leads, sold state)
-/auction_storefront/server/hammer_and_hearth.db
+/auction_storefront/server/pyli_industries.db

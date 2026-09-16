@@ -1,4 +1,4 @@
-# Hammer & Hearth — auction resale storefront
+# Pamela Y. Logan Industries — auction resale storefront
 
 A complete storefront for reselling items bought at auction — antiques,
 jewellery, electronics, vehicles, tiny homes and property — across a
@@ -54,13 +54,13 @@ uv pip install -r requirements.txt
 uv run uvicorn main:app --reload --port 8000
 ```
 
-A SQLite file (`hammer_and_hearth.db`) is created next to `main.py` on first
+A SQLite file (`pyli_industries.db`) is created next to `main.py` on first
 run — that's your database; see **Persistence** below.
 
-Then set `HH_CONFIG` at the top of `web/index.html`:
+Then set `PYLI_CONFIG` at the top of `web/index.html`:
 
 ```js
-window.HH_CONFIG = {
+window.PYLI_CONFIG = {
   stripeKey: "pk_live_…",     // publishable key only
   paypalClientId: "…",
   apiBase: "http://localhost:8000",
@@ -286,7 +286,7 @@ overridden, so a fetch-backed catalogue and the admin API compose cleanly.
   own auth if you build a UI in front of them — a bearer token in an env var
   is adequate for one operator, not for a team.
 - Point the Stripe webhook at `/api/webhook` and set `STRIPE_WEBHOOK_SECRET`.
-- Back up `hammer_and_hearth.db`, or move to Postgres if you need more than
+- Back up `pyli_industries.db`, or move to Postgres if you need more than
   one app server.
 - Photograph the lots. The line-art plates are placeholders, and nobody buys
   a $28,000 Mercedes — or a $2,450 plan chest — from a drawing of one.
