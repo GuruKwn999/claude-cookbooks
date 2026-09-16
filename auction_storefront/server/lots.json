@@ -5,6 +5,7 @@
       "lot": "1042",
       "title": "Pair of Danish teak lounge chairs",
       "cat": "furniture",
+      "fulfilment": "ship",
       "era": "c. 1962",
       "grade": "B",
       "priceUsd": 1850,
@@ -23,6 +24,7 @@
       "lot": "1043",
       "title": "Victorian mourning brooch, seed pearl and jet",
       "cat": "jewellery",
+      "fulfilment": "ship",
       "era": "c. 1878",
       "grade": "A-",
       "priceUsd": 420,
@@ -41,6 +43,7 @@
       "lot": "1044",
       "title": "Ordnance survey estate map, hand-coloured",
       "cat": "art",
+      "fulfilment": "ship",
       "era": "1893",
       "grade": "B-",
       "priceUsd": 310,
@@ -59,6 +62,7 @@
       "lot": "1045",
       "title": "Studio stoneware vase, tenmoku glaze",
       "cat": "ceramics",
+      "fulfilment": "ship",
       "era": "c. 1974",
       "grade": "A",
       "priceUsd": 680,
@@ -77,6 +81,7 @@
       "lot": "1046",
       "title": "Swiss pocket watch, open-face, silver case",
       "cat": "timepieces",
+      "fulfilment": "ship",
       "era": "1911",
       "grade": "C",
       "priceUsd": 540,
@@ -95,6 +100,7 @@
       "lot": "1047",
       "title": "Anatolian kilim runner, vegetable dyes",
       "cat": "textiles",
+      "fulfilment": "ship",
       "era": "c. 1940",
       "grade": "C",
       "priceUsd": 1240,
@@ -113,6 +119,7 @@
       "lot": "1048",
       "title": "Georgian silver mustard pot with blue liner",
       "cat": "silver",
+      "fulfilment": "ship",
       "era": "1802",
       "grade": "B",
       "priceUsd": 395,
@@ -131,6 +138,7 @@
       "lot": "1049",
       "title": "Brass library lamp, green glass shade",
       "cat": "lighting",
+      "fulfilment": "ship",
       "era": "c. 1930",
       "grade": "B-",
       "priceUsd": 470,
@@ -149,6 +157,7 @@
       "lot": "1050",
       "title": "Set of six cut-crystal wine glasses",
       "cat": "glass",
+      "fulfilment": "ship",
       "era": "c. 1955",
       "grade": "A-",
       "priceUsd": 290,
@@ -167,6 +176,7 @@
       "lot": "1051",
       "title": "Bound run of a regional almanac, 1901–1908",
       "cat": "books",
+      "fulfilment": "ship",
       "era": "1908 binding",
       "grade": "C",
       "priceUsd": 260,
@@ -185,6 +195,7 @@
       "lot": "1052",
       "title": "Trade tokens, brass, group of eleven",
       "cat": "coins",
+      "fulfilment": "ship",
       "era": "1888–1924",
       "grade": "C",
       "priceUsd": 185,
@@ -203,6 +214,7 @@
       "lot": "1053",
       "title": "Boxwood and brass drawing set",
       "cat": "instruments",
+      "fulfilment": "ship",
       "era": "c. 1895",
       "grade": "B",
       "priceUsd": 340,
@@ -221,6 +233,7 @@
       "lot": "1054",
       "title": "Elm and ash Windsor armchair",
       "cat": "furniture",
+      "fulfilment": "ship",
       "era": "c. 1840",
       "grade": "C",
       "priceUsd": 760,
@@ -239,6 +252,7 @@
       "lot": "1055",
       "title": "Art deco marcasite and silver bracelet",
       "cat": "jewellery",
+      "fulfilment": "ship",
       "era": "c. 1928",
       "grade": "B",
       "priceUsd": 590,
@@ -257,6 +271,7 @@
       "lot": "1056",
       "title": "Lithograph, harbour at low tide, signed in pencil",
       "cat": "art",
+      "fulfilment": "ship",
       "era": "1967",
       "grade": "A-",
       "priceUsd": 880,
@@ -275,6 +290,7 @@
       "lot": "1057",
       "title": "Transferware meat platter, blue and white",
       "cat": "ceramics",
+      "fulfilment": "ship",
       "era": "c. 1835",
       "grade": "C",
       "priceUsd": 220,
@@ -293,6 +309,7 @@
       "lot": "1058",
       "title": "Railway signal-box clock, fusee movement",
       "cat": "timepieces",
+      "fulfilment": "ship",
       "era": "c. 1905",
       "grade": "B-",
       "priceUsd": 2100,
@@ -311,6 +328,7 @@
       "lot": "1059",
       "title": "Welsh blanket, double-cloth, red and cream",
       "cat": "textiles",
+      "fulfilment": "ship",
       "era": "c. 1950",
       "grade": "B",
       "priceUsd": 480,
@@ -329,6 +347,7 @@
       "lot": "1060",
       "title": "Electroplate tea service, four pieces",
       "cat": "silver",
+      "fulfilment": "ship",
       "era": "c. 1920",
       "grade": "C",
       "priceUsd": 265,
@@ -347,6 +366,7 @@
       "lot": "1061",
       "title": "Pair of opaline glass table lamps",
       "cat": "lighting",
+      "fulfilment": "ship",
       "era": "c. 1968",
       "grade": "A-",
       "priceUsd": 1120,
@@ -365,6 +385,7 @@
       "lot": "1062",
       "title": "Green uranium glass cake stand",
       "cat": "glass",
+      "fulfilment": "ship",
       "era": "c. 1935",
       "grade": "B",
       "priceUsd": 175,
@@ -383,6 +404,7 @@
       "lot": "1063",
       "title": "Shipping line luggage labels, album of 60",
       "cat": "books",
+      "fulfilment": "ship",
       "era": "1924–1961",
       "grade": "B-",
       "priceUsd": 240,
@@ -401,6 +423,7 @@
       "lot": "1064",
       "title": "Oak plan chest, eight drawers",
       "cat": "furniture",
+      "fulfilment": "freight",
       "era": "c. 1948",
       "grade": "B-",
       "priceUsd": 2450,
@@ -412,13 +435,14 @@
       "listed": "2026-09-15",
       "dims": "94 × 112 × 79 cm",
       "weight": "72 kg",
-      "note": "Ex-drawing office. All eight drawers run freely on their original runners; brass cup handles complete. Top has ink stains and scribe marks left in place. Ships palletised by freight, quoted separately."
+      "note": "Ex-drawing office. All eight drawers run freely on their original runners; brass cup handles complete. Top has ink stains and scribe marks left in place."
     },
     {
       "id": "l1065",
       "lot": "1065",
       "title": "Ship's brass bulkhead clock",
       "cat": "timepieces",
+      "fulfilment": "ship",
       "era": "c. 1958",
       "grade": "D",
       "priceUsd": 310,
@@ -430,57 +454,1047 @@
       "listed": "2026-08-13",
       "dims": "20 cm diameter",
       "weight": "2.6 kg",
-      "note": "Sold as found and as a project: the movement does not run and the mainspring is suspect. Case, bezel, glass and dial are all sound and the piece is complete. No return on grounds of condition — it is described here plainly."
+      "note": "Sold as found and as a project: the movement does not run and the mainspring is suspect. Case, bezel, glass and dial are all sound and the piece is complete. No return on grounds of condition."
+    },
+    {
+      "id": "l2001",
+      "lot": "2001",
+      "title": "Leica M6 rangefinder with 50mm Summicron",
+      "cat": "cameras",
+      "fulfilment": "ship",
+      "era": "1992",
+      "grade": "B",
+      "priceUsd": 4200,
+      "estLow": 3200,
+      "estHigh": 4400,
+      "qty": 1,
+      "house": "Marchbank & Kerr",
+      "sale": "Photographica, lot 71",
+      "listed": "2026-09-16",
+      "dims": "Body 138 × 77 × 38 mm",
+      "weight": "1.1 kg with lens",
+      "specs": [
+        [
+          "Shutter",
+          "Tested across all speeds, accurate to ±5%"
+        ],
+        [
+          "Meter",
+          "Responds correctly, fresh cells fitted"
+        ],
+        [
+          "Rangefinder",
+          "Patch clear, vertical alignment true"
+        ],
+        [
+          "Included",
+          "Body cap, lens hood, original strap"
+        ]
+      ],
+      "note": "Brassing to the top plate edges and baseplate corners — used, not abused. Glass clear with no haze, fungus or separation; two cleaning marks on the front element that do not appear in images. Recently serviced, receipt included."
+    },
+    {
+      "id": "l2002",
+      "lot": "2002",
+      "title": "Technics SL-1200MK2 turntable",
+      "cat": "audio",
+      "fulfilment": "ship",
+      "era": "c. 1985",
+      "grade": "B-",
+      "priceUsd": 980,
+      "estLow": 700,
+      "estHigh": 1100,
+      "qty": 1,
+      "house": "Pike River Auction Barn",
+      "sale": "Audio, lot 143",
+      "listed": "2026-09-14",
+      "dims": "453 × 360 × 162 mm",
+      "weight": "12.5 kg",
+      "specs": [
+        [
+          "Tested",
+          "Runs at 33 and 45, pitch stable across the range"
+        ],
+        [
+          "Motor",
+          "Direct drive, no wow audible on a test pressing"
+        ],
+        [
+          "Cartridge",
+          "Not included — headshell only"
+        ],
+        [
+          "Power",
+          "100–240V, cable for your region"
+        ]
+      ],
+      "note": "Scuffs to the plinth top surface and one corner. Pitch fader smooth, strobe accurate, start-stop crisp. Dust cover included with a hairline crack at the left hinge."
+    },
+    {
+      "id": "l2003",
+      "lot": "2003",
+      "title": "Nakamichi Dragon cassette deck",
+      "cat": "audio",
+      "fulfilment": "ship",
+      "era": "c. 1988",
+      "grade": "C",
+      "priceUsd": 2650,
+      "estLow": 1800,
+      "estHigh": 3000,
+      "qty": 1,
+      "house": "Ravenswood Sale Rooms",
+      "sale": "Audio, lot 22",
+      "listed": "2026-09-13",
+      "dims": "440 × 380 × 150 mm",
+      "weight": "13.2 kg",
+      "specs": [
+        [
+          "Tested",
+          "Plays and records on all three head positions"
+        ],
+        [
+          "Auto-azimuth",
+          "Engages and tracks correctly"
+        ],
+        [
+          "Belts",
+          "Original, showing age — budget for a service"
+        ],
+        [
+          "Included",
+          "Remote, manual, original box"
+        ]
+      ],
+      "note": "Sold working but unserviced, and a deck of this age wants belts and idler attention whatever it does on the bench today. Fascia excellent, one small mark below the counter."
+    },
+    {
+      "id": "l2004",
+      "lot": "2004",
+      "title": "DJI Mavic 3 Pro with Fly More kit",
+      "cat": "cameras",
+      "fulfilment": "ship",
+      "era": "2023",
+      "grade": "A-",
+      "priceUsd": 1450,
+      "estLow": 1100,
+      "estHigh": 1600,
+      "qty": 1,
+      "house": "Hollis County Estate Sale",
+      "sale": "Modern Technology, lot 8",
+      "listed": "2026-09-15",
+      "dims": "Case 34 × 26 × 18 cm",
+      "weight": "3.8 kg with case",
+      "specs": [
+        [
+          "Flight time",
+          "41 hours logged, 118 flights"
+        ],
+        [
+          "Batteries",
+          "Three, all above 88% health"
+        ],
+        [
+          "Gimbal",
+          "Calibrates cleanly, no play"
+        ],
+        [
+          "Included",
+          "Controller, charging hub, ND filters, case"
+        ]
+      ],
+      "note": "Props unmarked, shell free of scuffs. Firmware current at the time of listing. Flight log exported and included, so you can see exactly what it has done."
+    },
+    {
+      "id": "l2005",
+      "lot": "2005",
+      "title": "Sony 65-inch A95L OLED television",
+      "cat": "audio",
+      "fulfilment": "freight",
+      "era": "2024",
+      "grade": "B",
+      "priceUsd": 1680,
+      "estLow": 1200,
+      "estHigh": 1900,
+      "qty": 1,
+      "house": "Pike River Auction Barn",
+      "sale": "Modern Technology, lot 51",
+      "listed": "2026-09-12",
+      "dims": "1443 × 830 × 53 mm",
+      "weight": "26 kg with stand",
+      "specs": [
+        [
+          "Panel hours",
+          "2,140 — checked in the service menu"
+        ],
+        [
+          "Burn-in",
+          "None found on full-field test slides"
+        ],
+        [
+          "Ports",
+          "All four HDMI tested"
+        ],
+        [
+          "Included",
+          "Stand, remote, power lead. No original box"
+        ]
+      ],
+      "note": "Ex-showroom. A faint scuff on the lower bezel, invisible in use. Panel test images photographed and available on request — ask before buying if burn-in matters to you."
+    },
+    {
+      "id": "l2006",
+      "lot": "2006",
+      "title": "Mac Studio M2 Ultra, 128GB",
+      "cat": "computing",
+      "fulfilment": "ship",
+      "era": "2023",
+      "grade": "A-",
+      "priceUsd": 3400,
+      "estLow": 2600,
+      "estHigh": 3600,
+      "qty": 1,
+      "house": "Marchbank & Kerr",
+      "sale": "Business Assets, lot 117",
+      "listed": "2026-09-16",
+      "dims": "197 × 197 × 95 mm",
+      "weight": "3.6 kg",
+      "specs": [
+        [
+          "Storage",
+          "2TB internal, SMART clean"
+        ],
+        [
+          "Cycle",
+          "Ex-studio, mains-powered its whole life"
+        ],
+        [
+          "Wiped",
+          "Erased and reinstalled, activation lock cleared"
+        ],
+        [
+          "Included",
+          "Power lead only"
+        ]
+      ],
+      "note": "From a post-production house that upgraded. Casework near perfect, one shallow mark on the underside. Boots to setup, verified before packing."
+    },
+    {
+      "id": "l2007",
+      "lot": "2007",
+      "title": "Apple II Plus with monitor and drives",
+      "cat": "computing",
+      "fulfilment": "freight",
+      "era": "1981",
+      "grade": "C",
+      "priceUsd": 1250,
+      "estLow": 800,
+      "estHigh": 1400,
+      "qty": 1,
+      "house": "Ravenswood Sale Rooms",
+      "sale": "Vintage Computing, lot 3",
+      "listed": "2026-09-10",
+      "dims": "System 46 × 38 × 12 cm, monitor separate",
+      "weight": "19 kg the lot",
+      "specs": [
+        [
+          "Tested",
+          "Boots to BASIC prompt, both drives read"
+        ],
+        [
+          "Case",
+          "Yellowed evenly, no cracks at the vents"
+        ],
+        [
+          "Cards",
+          "Disk II controller, 16K language card"
+        ],
+        [
+          "Included",
+          "Two Disk II drives, monitor, software in a box"
+        ]
+      ],
+      "note": "Original PSU works but has not been recapped — have that done before you rely on it. Keyboard all keys respond. Includes an unsorted box of disks, contents unverified."
+    },
+    {
+      "id": "l2008",
+      "lot": "2008",
+      "title": "Dell Precision workstations, pallet of six",
+      "cat": "computing",
+      "fulfilment": "freight",
+      "era": "2021",
+      "grade": "B-",
+      "priceUsd": 2900,
+      "estLow": 2000,
+      "estHigh": 3200,
+      "qty": 1,
+      "house": "Hollis County Estate Sale",
+      "sale": "Corporate Liquidation, lot 204",
+      "listed": "2026-09-11",
+      "dims": "Pallet 120 × 100 × 110 cm",
+      "weight": "98 kg",
+      "specs": [
+        [
+          "Units",
+          "Six × Precision 5820, Xeon W-2245"
+        ],
+        [
+          "Memory",
+          "64GB each, tested"
+        ],
+        [
+          "Drives",
+          "Removed and destroyed — certificate included"
+        ],
+        [
+          "Condition",
+          "Rack rash, all boot to BIOS"
+        ]
+      ],
+      "note": "Corporate liquidation, sold as one pallet and not split. No drives, no OS licences. Three have a GPU fitted; the other three do not. Photographed individually with asset tags."
+    },
+    {
+      "id": "l2009",
+      "lot": "2009",
+      "title": "iPhone 15 Pro, unlocked, lot of four",
+      "cat": "mobile",
+      "fulfilment": "ship",
+      "era": "2023",
+      "grade": "B",
+      "priceUsd": 2150,
+      "estLow": 1600,
+      "estHigh": 2400,
+      "qty": 1,
+      "house": "Marchbank & Kerr",
+      "sale": "Devices, lot 412",
+      "listed": "2026-09-15",
+      "dims": "Each 146.6 × 70.6 × 8.25 mm",
+      "weight": "1.1 kg the lot",
+      "specs": [
+        [
+          "Capacity",
+          "Two × 256GB, two × 128GB"
+        ],
+        [
+          "Battery health",
+          "91%, 89%, 94%, 88%"
+        ],
+        [
+          "Locks",
+          "All carrier-unlocked, iCloud cleared, IMEIs clean"
+        ],
+        [
+          "Included",
+          "Cables. No boxes"
+        ]
+      ],
+      "note": "Corporate fleet return. All four power on, screens respond across the full surface, Face ID works on each. Two have light bezel marks; one has a hairline scratch on the camera cover that does not affect images."
+    },
+    {
+      "id": "l2010",
+      "lot": "2010",
+      "title": "Google Pixel 8 Pro, lot of six",
+      "cat": "mobile",
+      "fulfilment": "ship",
+      "era": "2023",
+      "grade": "B-",
+      "priceUsd": 1680,
+      "estLow": 1200,
+      "estHigh": 1800,
+      "qty": 1,
+      "house": "Pike River Auction Barn",
+      "sale": "Devices, lot 388",
+      "listed": "2026-09-09",
+      "dims": "Each 162.6 × 76.5 × 8.8 mm",
+      "weight": "1.6 kg the lot",
+      "specs": [
+        [
+          "Capacity",
+          "All 128GB"
+        ],
+        [
+          "Battery health",
+          "83–92%, listed per IMEI on the card"
+        ],
+        [
+          "Locks",
+          "Unlocked, factory reset, FRP cleared"
+        ],
+        [
+          "Included",
+          "Nothing but the handsets"
+        ]
+      ],
+      "note": "One of the six has a cracked rear glass — it is the cheapest of the lot and is photographed separately so you know which. The other five are cosmetically sound."
+    },
+    {
+      "id": "l2011",
+      "lot": "2011",
+      "title": "Early mobile handsets, collection of 22",
+      "cat": "mobile",
+      "fulfilment": "ship",
+      "era": "1996–2009",
+      "grade": "C",
+      "priceUsd": 540,
+      "estLow": 300,
+      "estHigh": 600,
+      "qty": 1,
+      "house": "Ravenswood Sale Rooms",
+      "sale": "Devices, lot 9",
+      "listed": "2026-09-08",
+      "dims": "Case 42 × 30 × 14 cm",
+      "weight": "4.2 kg",
+      "specs": [
+        [
+          "Powers on",
+          "14 of 22 — listed on the inventory card"
+        ],
+        [
+          "Batteries",
+          "Original, all long dead"
+        ],
+        [
+          "Notable",
+          "Nokia 8110, two BlackBerry, one Motorola StarTAC"
+        ],
+        [
+          "Sold as",
+          "A collection, not split"
+        ]
+      ],
+      "note": "A collector's shelf, bought whole. Sold as decorative and historical rather than functional. Every handset is listed with its condition on a card that ships with the lot."
+    },
+    {
+      "id": "l2012",
+      "lot": "2012",
+      "title": "Quad ESL-57 electrostatic speakers",
+      "cat": "audio",
+      "fulfilment": "freight",
+      "era": "c. 1975",
+      "grade": "C",
+      "priceUsd": 1850,
+      "estLow": 1200,
+      "estHigh": 2000,
+      "qty": 1,
+      "house": "Marchbank & Kerr",
+      "sale": "Audio, lot 64",
+      "listed": "2026-09-07",
+      "dims": "880 × 720 × 270 mm each",
+      "weight": "34 kg the pair",
+      "specs": [
+        [
+          "Tested",
+          "Both panels charge and play"
+        ],
+        [
+          "Balance",
+          "Right speaker quieter above 4kHz"
+        ],
+        [
+          "Dust covers",
+          "Original, one with a small tear at the rear"
+        ],
+        [
+          "Service",
+          "Not done. Budget for panels"
+        ]
+      ],
+      "note": "Honest about this one: they work, they sound like nothing else, and they are fifty years old. The right panel is on borrowed time. Priced as a pair needing attention, not as restored."
+    },
+    {
+      "id": "l3001",
+      "lot": "3001",
+      "title": "1972 Mercedes-Benz 280SE 4.5",
+      "cat": "cars",
+      "fulfilment": "collect",
+      "depositUsd": 2800,
+      "era": "1972",
+      "grade": "C",
+      "priceUsd": 28000,
+      "estLow": 22000,
+      "estHigh": 32000,
+      "qty": 1,
+      "house": "Ravenswood Sale Rooms",
+      "sale": "Classic Motor Cars, lot 17",
+      "listed": "2026-09-16",
+      "dims": "4,900 × 1,810 × 1,440 mm",
+      "weight": "1,650 kg",
+      "specs": [
+        [
+          "Odometer",
+          "142,880 km — believed genuine, not warranted"
+        ],
+        [
+          "VIN",
+          "Quoted in full on request"
+        ],
+        [
+          "Title",
+          "Clean, in the seller's name, in hand"
+        ],
+        [
+          "MOT / inspection",
+          "Valid 11 months"
+        ],
+        [
+          "Runs & drives",
+          "Yes — driven onto the transporter"
+        ],
+        [
+          "Keys",
+          "Two, both working"
+        ]
+      ],
+      "note": "Repaint in the original colour, done well but not concours — there is overspray on one door shut. Chrome good, bumpers straight. Interior original with a split in the driver's seat bolster. Starts on the button, idles evenly, gearbox shifts cleanly. Rust: surface only in the spare wheel well, photographed. Inspection strongly encouraged and welcome by appointment."
+    },
+    {
+      "id": "l3002",
+      "lot": "3002",
+      "title": "2021 Tesla Model 3 Long Range",
+      "cat": "cars",
+      "fulfilment": "collect",
+      "depositUsd": 2200,
+      "era": "2021",
+      "grade": "B",
+      "priceUsd": 21500,
+      "estLow": 18000,
+      "estHigh": 23500,
+      "qty": 1,
+      "house": "Hollis County Estate Sale",
+      "sale": "Fleet Disposal, lot 302",
+      "listed": "2026-09-15",
+      "dims": "4,694 × 1,849 × 1,443 mm",
+      "weight": "1,844 kg",
+      "specs": [
+        [
+          "Odometer",
+          "68,400 km"
+        ],
+        [
+          "Battery health",
+          "92% of original rated range"
+        ],
+        [
+          "Title",
+          "Clean, fleet-owned from new"
+        ],
+        [
+          "Service",
+          "Full history, last logged at 61,000 km"
+        ],
+        [
+          "Runs & drives",
+          "Yes"
+        ],
+        [
+          "Keys",
+          "Two cards, one fob"
+        ]
+      ],
+      "note": "Ex-corporate fleet, single owner, garaged. Paint has the usual stone chips on the leading edge of the bonnet. One alloy kerbed at the front left. Screen and interior trim unmarked. Supercharging unrestricted. Sold with the service history printout."
+    },
+    {
+      "id": "l3003",
+      "lot": "3003",
+      "title": "1976 Honda CB750 Four",
+      "cat": "motorcycles",
+      "fulfilment": "collect",
+      "depositUsd": 900,
+      "era": "1976",
+      "grade": "C",
+      "priceUsd": 8900,
+      "estLow": 6500,
+      "estHigh": 9500,
+      "qty": 1,
+      "house": "Pike River Auction Barn",
+      "sale": "Classic Motorcycles, lot 44",
+      "listed": "2026-09-13",
+      "dims": "2,200 × 880 × 1,120 mm",
+      "weight": "230 kg",
+      "specs": [
+        [
+          "Odometer",
+          "31,200 miles — speedo replaced, true mileage unknown"
+        ],
+        [
+          "VIN",
+          "Frame and engine numbers match"
+        ],
+        [
+          "Title",
+          "Clean"
+        ],
+        [
+          "Runs",
+          "Starts and rides. Fourth gear notchy"
+        ],
+        [
+          "Carbs",
+          "Balanced within the last year"
+        ],
+        [
+          "Keys",
+          "One"
+        ]
+      ],
+      "note": "A rider, not a show bike, and priced that way. Tank has been repainted and is a shade off original. Exhaust is a period-correct aftermarket four-into-one, original downpipes not included. Fork seals are dry. Tyres have date codes from 2019 — replace them before you ride it properly."
+    },
+    {
+      "id": "l3004",
+      "lot": "3004",
+      "title": "2019 Ford Transit 350 panel van",
+      "cat": "commercial",
+      "fulfilment": "collect",
+      "depositUsd": 1400,
+      "era": "2019",
+      "grade": "C",
+      "priceUsd": 13800,
+      "estLow": 10000,
+      "estHigh": 15000,
+      "qty": 1,
+      "house": "Marchbank & Kerr",
+      "sale": "Commercial Vehicles, lot 88",
+      "listed": "2026-09-12",
+      "dims": "5,981 × 2,059 × 2,780 mm",
+      "weight": "2,140 kg unladen",
+      "specs": [
+        [
+          "Odometer",
+          "184,600 km"
+        ],
+        [
+          "Title",
+          "Clean, ex-contractor"
+        ],
+        [
+          "Service",
+          "Stamped to 170,000 km, none since"
+        ],
+        [
+          "Runs & drives",
+          "Yes"
+        ],
+        [
+          "Load area",
+          "Ply-lined, well used"
+        ],
+        [
+          "Keys",
+          "Two"
+        ]
+      ],
+      "note": "A working van that has worked. Dents and scrapes down both flanks, photographed in full — nothing structural. Cambelt history unknown, which at this mileage is the thing to price in. Drives straight, brakes evenly, no warning lights."
+    },
+    {
+      "id": "l3005",
+      "lot": "3005",
+      "title": "Twin-axle box trailer, 3.5 tonne",
+      "cat": "commercial",
+      "fulfilment": "collect",
+      "depositUsd": 340,
+      "era": "2018",
+      "grade": "B-",
+      "priceUsd": 3400,
+      "estLow": 2400,
+      "estHigh": 3800,
+      "qty": 1,
+      "house": "Ravenswood Sale Rooms",
+      "sale": "Plant & Equipment, lot 129",
+      "listed": "2026-09-09",
+      "dims": "4,200 × 2,000 × 2,000 mm box",
+      "weight": "750 kg unladen",
+      "specs": [
+        [
+          "Gross weight",
+          "3,500 kg"
+        ],
+        [
+          "Brakes",
+          "Overrun, tested and adjusted"
+        ],
+        [
+          "Tyres",
+          "Four, all above 6 mm"
+        ],
+        [
+          "Lights",
+          "All working, new loom in 2024"
+        ],
+        [
+          "Ramp",
+          "Full-width drop, gas struts replaced"
+        ]
+      ],
+      "note": "Sound and usable. Floor is ply over steel with the usual gouges. One side panel has been repaired with a riveted plate, done properly. Comes with a spare wheel and a wheel clamp."
+    },
+    {
+      "id": "l4001",
+      "lot": "4001",
+      "title": "Three-bedroom brick house, needs work",
+      "cat": "residential",
+      "fulfilment": "enquiry",
+      "era": "Built c. 1936",
+      "grade": "C",
+      "priceUsd": 168000,
+      "estLow": 145000,
+      "estHigh": 185000,
+      "qty": 1,
+      "house": "Hollis County Estate Sale",
+      "sale": "Probate Property, lot 1",
+      "listed": "2026-09-16",
+      "dims": "128 m² internal, 460 m² plot",
+      "specs": [
+        [
+          "Tenure",
+          "Freehold"
+        ],
+        [
+          "Bedrooms",
+          "3"
+        ],
+        [
+          "Bathrooms",
+          "1, original suite"
+        ],
+        [
+          "Parcel",
+          "Quoted on enquiry"
+        ],
+        [
+          "Council band / tax",
+          "Band C equivalent"
+        ],
+        [
+          "Vacant",
+          "Yes, empty since March"
+        ],
+        [
+          "Survey",
+          "Homebuyer report available to serious enquirers"
+        ]
+      ],
+      "note": "Probate sale. Structurally sound on the survey, but it has not been touched since the 1980s: original wiring, a boiler at the end of its life, and damp in the rear return that the report attributes to a failed gutter. Roof was relaid in 2011. Priced for the work it needs. Viewings by appointment, in person only."
+    },
+    {
+      "id": "l4002",
+      "lot": "4002",
+      "title": "Building plot with lapsed permission, 0.4 acre",
+      "cat": "land",
+      "fulfilment": "enquiry",
+      "era": "—",
+      "grade": "B",
+      "priceUsd": 74000,
+      "estLow": 60000,
+      "estHigh": 85000,
+      "qty": 1,
+      "house": "Ravenswood Sale Rooms",
+      "sale": "Land & Development, lot 6",
+      "listed": "2026-09-14",
+      "dims": "0.4 acre / 1,620 m²",
+      "specs": [
+        [
+          "Tenure",
+          "Freehold"
+        ],
+        [
+          "Permission",
+          "Outline, lapsed 2024 — renewal not guaranteed"
+        ],
+        [
+          "Services",
+          "Water and electricity at the boundary. No mains drainage"
+        ],
+        [
+          "Access",
+          "Direct, off an adopted road"
+        ],
+        [
+          "Covenants",
+          "One, restricting to a single dwelling"
+        ]
+      ],
+      "note": "The lapsed permission is the whole story here — it establishes the principle of development but it does not bind the authority to grant it again. Buy it on the assumption you will reapply. Legal pack available before you commit."
+    },
+    {
+      "id": "l4003",
+      "lot": "4003",
+      "title": "Former shop unit with flat above",
+      "cat": "residential",
+      "fulfilment": "enquiry",
+      "era": "Built c. 1901",
+      "grade": "C",
+      "priceUsd": 122000,
+      "estLow": 95000,
+      "estHigh": 140000,
+      "qty": 1,
+      "house": "Marchbank & Kerr",
+      "sale": "Commercial Property, lot 14",
+      "listed": "2026-09-11",
+      "dims": "Ground 62 m², flat 74 m²",
+      "specs": [
+        [
+          "Tenure",
+          "Freehold"
+        ],
+        [
+          "Use class",
+          "Retail ground floor, residential above"
+        ],
+        [
+          "Tenanted",
+          "No — both parts vacant"
+        ],
+        [
+          "Rental estimate",
+          "Agent's figure available on enquiry"
+        ],
+        [
+          "Shopfront",
+          "Boarded, original stallriser intact"
+        ]
+      ],
+      "note": "Corner position on a secondary parade. The flat has its own street door, which matters for letting it separately. Both parts need full refurbishment. Asbestos survey done and clear for the areas inspected; the loft was not accessed."
+    },
+    {
+      "id": "l4004",
+      "lot": "4004",
+      "title": "Lakeside cabin and mooring, 1.2 acres",
+      "cat": "land",
+      "fulfilment": "enquiry",
+      "era": "Cabin c. 1968",
+      "grade": "D",
+      "priceUsd": 96000,
+      "estLow": 75000,
+      "estHigh": 115000,
+      "qty": 1,
+      "house": "Pike River Auction Barn",
+      "sale": "Rural Property, lot 22",
+      "listed": "2026-09-08",
+      "dims": "Cabin 58 m², plot 1.2 acres",
+      "specs": [
+        [
+          "Tenure",
+          "Freehold, with a registered mooring right"
+        ],
+        [
+          "Services",
+          "Off-grid. Well water, septic, no mains power"
+        ],
+        [
+          "Access",
+          "Unmade track, shared, maintenance by agreement"
+        ],
+        [
+          "Occupancy",
+          "Seasonal restriction, April to October"
+        ],
+        [
+          "Condition",
+          "Cabin is not habitable as it stands"
+        ]
+      ],
+      "note": "Sold as land with a structure on it. The cabin has a failed roof over the rear section and should be treated as rebuildable at best. The value is in the plot, the frontage and the mooring. The seasonal occupancy condition is registered and has not been challenged."
+    },
+    {
+      "id": "l5001",
+      "lot": "5001",
+      "title": "Cedar-clad tiny house on a trailer chassis",
+      "cat": "tinyhome",
+      "fulfilment": "freight",
+      "era": "Built 2023",
+      "grade": "A-",
+      "priceUsd": 62000,
+      "estLow": 52000,
+      "estHigh": 68000,
+      "qty": 1,
+      "house": "Pike River Auction Barn",
+      "sale": "Small Structures, lot 2",
+      "listed": "2026-09-16",
+      "dims": "7.3 × 2.6 m floor, 4.1 m eave height",
+      "weight": "4,200 kg on the chassis",
+      "specs": [
+        [
+          "Chassis",
+          "Dual-axle, 5,200 kg rated, registered and titled"
+        ],
+        [
+          "Sleeping",
+          "Loft bed plus a fold-down in the living area"
+        ],
+        [
+          "Utilities",
+          "Composting toilet, 190 L fresh water, 30A shore power or 800W solar"
+        ],
+        [
+          "Heating",
+          "Wood stove, hearth-rated and certified"
+        ],
+        [
+          "Built to",
+          "RVIA-equivalent standard, inspection report included"
+        ],
+        [
+          "Delivery",
+          "Towed by a rated hitch vehicle or shipped flatbed — quoted to your address"
+        ]
+      ],
+      "note": "One owner, used as a weekend cabin rather than lived in full-time, which shows in how little the finish has aged. Cedar cladding has silvered evenly on the weather side. Roof membrane inspected this year, no soft spots. Composting toilet unused this season — service it before you move in. Comes with the build folder: chassis certificate, plumbing and electrical diagrams, and the original builder's contact."
+    },
+    {
+      "id": "l5002",
+      "lot": "5002",
+      "title": "Off-grid tiny home, steel frame, solar-equipped",
+      "cat": "tinyhome",
+      "fulfilment": "freight",
+      "era": "Built 2021",
+      "grade": "B",
+      "priceUsd": 71000,
+      "estLow": 60000,
+      "estHigh": 78000,
+      "qty": 1,
+      "house": "Ravenswood Sale Rooms",
+      "sale": "Small Structures, lot 5",
+      "listed": "2026-09-15",
+      "dims": "8.0 × 2.9 m floor, 4.3 m eave height",
+      "weight": "5,800 kg on the chassis",
+      "specs": [
+        [
+          "Chassis",
+          "Triple-axle, 6,800 kg rated, registered and titled"
+        ],
+        [
+          "Power",
+          "2.4 kW solar array, 10 kWh battery bank, inverter"
+        ],
+        [
+          "Utilities",
+          "Full bathroom with shower, 280 L fresh water, greywater tank"
+        ],
+        [
+          "Heating",
+          "Mini-split heat pump, propane backup"
+        ],
+        [
+          "Frame",
+          "Welded steel, not wood — no frame rot risk"
+        ],
+        [
+          "Delivery",
+          "Requires a heavy-tow permit in most states — quoted with the freight estimate"
+        ]
+      ],
+      "note": "Built for full-time off-grid living and used that way for two winters before the owners moved into a fixed property. Solar and battery system tested and logging correctly; battery bank is at 87% of original capacity, normal for its age. One window seal replaced last year after a leak — area checked and dry. Steel frame means no structural concerns from the tow; the interior birch ply has the light surface marking you'd expect from two years of use."
     }
   ],
   "categories": [
     {
       "id": "furniture",
-      "label": "Furniture"
-    },
-    {
-      "id": "jewellery",
-      "label": "Jewellery"
-    },
-    {
-      "id": "art",
-      "label": "Art & prints"
+      "label": "Furniture",
+      "dept": "interiors"
     },
     {
       "id": "ceramics",
-      "label": "Ceramics"
-    },
-    {
-      "id": "timepieces",
-      "label": "Timepieces"
-    },
-    {
-      "id": "textiles",
-      "label": "Rugs & textiles"
-    },
-    {
-      "id": "silver",
-      "label": "Silver & metalware"
-    },
-    {
-      "id": "lighting",
-      "label": "Lighting"
+      "label": "Ceramics",
+      "dept": "interiors"
     },
     {
       "id": "glass",
-      "label": "Glass"
+      "label": "Glass",
+      "dept": "interiors"
+    },
+    {
+      "id": "lighting",
+      "label": "Lighting",
+      "dept": "interiors"
+    },
+    {
+      "id": "textiles",
+      "label": "Rugs & textiles",
+      "dept": "interiors"
+    },
+    {
+      "id": "silver",
+      "label": "Silver & metalware",
+      "dept": "interiors"
+    },
+    {
+      "id": "jewellery",
+      "label": "Jewellery",
+      "dept": "adornment"
+    },
+    {
+      "id": "timepieces",
+      "label": "Timepieces",
+      "dept": "adornment"
+    },
+    {
+      "id": "art",
+      "label": "Art & prints",
+      "dept": "culture"
     },
     {
       "id": "books",
-      "label": "Books & ephemera"
+      "label": "Books & ephemera",
+      "dept": "culture"
     },
     {
       "id": "coins",
-      "label": "Coins & tokens"
+      "label": "Coins & tokens",
+      "dept": "culture"
     },
     {
       "id": "instruments",
-      "label": "Instruments"
+      "label": "Instruments",
+      "dept": "culture"
+    },
+    {
+      "id": "audio",
+      "label": "Audio & hi-fi",
+      "dept": "tech"
+    },
+    {
+      "id": "cameras",
+      "label": "Cameras & optics",
+      "dept": "tech"
+    },
+    {
+      "id": "computing",
+      "label": "Computing",
+      "dept": "tech"
+    },
+    {
+      "id": "mobile",
+      "label": "Phones & devices",
+      "dept": "tech"
+    },
+    {
+      "id": "cars",
+      "label": "Cars",
+      "dept": "vehicles"
+    },
+    {
+      "id": "motorcycles",
+      "label": "Motorcycles",
+      "dept": "vehicles"
+    },
+    {
+      "id": "commercial",
+      "label": "Commercial & plant",
+      "dept": "vehicles"
+    },
+    {
+      "id": "residential",
+      "label": "Residential",
+      "dept": "property"
+    },
+    {
+      "id": "land",
+      "label": "Land & plots",
+      "dept": "property"
+    },
+    {
+      "id": "tinyhome",
+      "label": "Trailer-built houses",
+      "dept": "tinyhomes"
     }
   ],
   "grades": [

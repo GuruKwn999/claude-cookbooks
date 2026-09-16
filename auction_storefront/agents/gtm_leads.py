@@ -1,10 +1,13 @@
 """Score and route the enquiries that come in through the storefront.
 
-A one-person resale shop gets three kinds of message through the contact form,
-and they are worth wildly different amounts of attention:
+A one-person resale shop spanning seven departments — antiques, jewellery,
+electronics, vehicles and property among them — gets wildly different messages
+through the same contact form, worth wildly different amounts of attention:
 
   * a household clearing a relative's estate — the best supply there is, and the
     person on the other end is usually grieving and in a hurry;
+  * someone with a car or a house to consign — a different sale process
+    entirely, and worth routing to the right one immediately;
   * a dealer who wants trade terms on three pieces — small margin, repeat volume;
   * someone who read "we buy" and wants to sell a broken television.
 
@@ -36,18 +39,28 @@ that buys single lots at regional auctions and resells them online. The owner \
 handles every enquiry personally and has limited hours, so your job is to say \
 which ones to open first and why.
 
+The shop's seven departments: interiors & antiques, jewellery & watches, art &
+collectables, electronics & computing, vehicles, property & land, and tiny
+homes. A lead is worth routing to the right one, not just scored.
+
 What the shop wants, in order:
-1. Estate clearances and probate sales — whole houses of unsorted goods. Highest
-   value per hour of the owner's time, and the seller usually needs help fast.
-2. Consignments of period furniture, jewellery, silver, studio ceramics, rugs,
-   clocks and scientific instruments. The shop's categories.
-3. Interior designers and set dressers sourcing for a project — repeat buyers.
+1. Estate clearances and probate sales — whole houses of unsorted goods, which
+   can span several departments in one lot. Highest value per hour of the
+   owner's time, and the seller usually needs help fast.
+2. A single high-value item in its own right: a classic or well-kept modern
+   car, a house or plot, vintage or tested working electronics, period
+   furniture, jewellery, silver, studio ceramics, rugs, clocks or scientific
+   instruments.
+3. Interior designers, set dressers and dealers sourcing for a project —
+   repeat buyers, worth cultivating even on a slow first enquiry.
 4. Trade buyers wanting three or more pieces.
 
 What the shop does not want, and should decline warmly:
-- Mass-market or flat-pack furniture, modern electronics, appliances.
+- Mass-market flat-pack furniture, dead or badly damaged consumer electronics
+  with no collector or vintage interest, and appliances.
 - Reproductions sold as period, or anything where the sender is evasive about
-  where it came from.
+  where it came from — including a vehicle with no title or a property with
+  disputed ownership.
 - Requests to value something the sender has no intention of selling.
 
 Judge urgency on the sender's situation, not their enthusiasm. A probate
@@ -67,7 +80,9 @@ class LeadAssessment(BaseModel):
         "nurture = keep warm, no action; decline = politely not a fit"
     )
     score: int = Field(ge=0, le=100, description="Fit against what the shop wants")
-    segment: Literal["estate", "consignment", "trade", "interior", "retail", "unclear"]
+    segment: Literal[
+        "estate", "consignment", "vehicle", "property", "trade", "interior", "retail", "unclear"
+    ]
     estimated_value_usd: int | None = Field(
         description="Rough value of the opportunity, or null when there is nothing to go on"
     )
@@ -119,6 +134,20 @@ DEMO_LEADS = [
         "email": "danny@example.com",
         "kind": "sell",
         "note": "got a 55 inch tv and a leather sofa, barely used, how much",
+    },
+    {
+        "name": "Priya Nair",
+        "email": "priya.nair@example.com",
+        "kind": "vehicle",
+        "note": "Selling my dad's 1968 MGB, garaged for 15 years, he kept every "
+        "service receipt. Title's clean, in my name now. Not in a rush.",
+    },
+    {
+        "name": "Tom Holbrook",
+        "email": "tholbrook@example.com",
+        "kind": "property",
+        "note": "We own a two-acre plot with lapsed planning permission, "
+        "considering listing it — no survey done yet, just testing the water.",
     },
     {
         "name": "Ines Fontana",

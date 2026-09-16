@@ -173,3 +173,6 @@ capabilities/content_moderation/evaluation/results.json
 # the repo root (a kernel started there).
 /demo_repo/
 /claude_agent_sdk/scheduled_repository_reviewer/demo_repo/
+
+# auction_storefront: runtime database (orders, leads, sold state)
+/auction_storefront/server/hammer_and_hearth.db

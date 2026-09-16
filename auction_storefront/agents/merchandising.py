@@ -31,7 +31,8 @@ MODEL = "claude-opus-5"
 CATALOG = json.loads((Path(__file__).parent.parent / "server" / "lots.json").read_text())
 
 SYSTEM = """You write listing copy for Hammer & Hearth, a one-person shop selling \
-single lots bought at regional auctions.
+single lots bought at regional auctions — from teapots to houses, across seven \
+departments.
 
 The house style, which is the whole business:
 - Lead with the object, not an adjective. "A plan chest from a drawing office"
@@ -43,6 +44,11 @@ The house style, which is the whole business:
 - Never state a maker, date or provenance the record does not support. Where the
   record hedges ("attribution, not signature"), hedge the same way.
 - Never imply more than one exists. Each lot is a single object.
+- Match the call to action to how the lot is sold. A shipped or freighted lot
+  is bought; a vehicle deposit reserves it for inspection, never "buy now" —
+  say what the deposit does and that a balance follows; a property or land
+  lot is never for sale on this page at all — invite the reader to register
+  interest, not to purchase.
 
 Length: `listing` is 90–140 words. `search_description` is under 155 characters
 and reads as a sentence, not keywords. `social` is under 240 characters and
@@ -60,20 +66,41 @@ class ListingCopy(BaseModel):
     )
 
 
+FULFILMENT_NOTE = {
+    "ship": "Sold and shipped through the site at the price above.",
+    "freight": "Sold through the site; too large to ship, so freight is quoted after checkout.",
+    "collect": "Sold through the site as a deposit that reserves it for inspection; "
+    "the balance is due on collection. Never describe the price above as what "
+    "the buyer pays today — it isn't.",
+    "enquiry": "Not sold through a cart at all. The listing should invite the reader to "
+    "register interest, not to buy — there is no checkout for this lot.",
+}
+
+
 def draft_copy(lot: dict, language: str, client: anthropic.Anthropic) -> ListingCopy:
     """Draft listing copy for one lot in one language."""
-    record = (
-        f"Lot {lot['lot']} — {lot['title']}\n"
-        f"Category: {lot['cat']}\n"
-        f"Period: {lot['era']}\n"
-        f"Condition grade: {lot['grade']}\n"
-        f"Asking price: ${lot['priceUsd']:,}\n"
-        f"Auction estimate was: ${lot['estLow']:,}–${lot['estHigh']:,}\n"
-        f"Bought at: {lot['house']}, {lot['sale']}\n"
-        f"Dimensions: {lot['dims']}\n"
-        f"Weight: {lot['weight']}\n"
-        f"Cataloguer's notes: {lot['note']}"
+    lines = [
+        f"Lot {lot['lot']} — {lot['title']}",
+        f"Category: {lot['cat']}",
+        f"Period: {lot['era']}",
+        f"Condition grade: {lot['grade']}",
+        f"Asking price: ${lot['priceUsd']:,}",
+        f"Auction estimate was: ${lot['estLow']:,}–${lot['estHigh']:,}",
+        f"Bought at: {lot['house']}, {lot['sale']}",
+        f"Dimensions: {lot['dims']}",
+    ]
+    if lot.get("weight"):
+        lines.append(f"Weight: {lot['weight']}")
+    if lot.get("depositUsd"):
+        lines.append(f"Deposit to reserve: ${lot['depositUsd']:,}")
+    if lot.get("specs"):
+        lines.append("Specification:")
+        lines.extend(f"  {key}: {value}" for key, value in lot["specs"])
+    lines.append(
+        f"How it's sold: {FULFILMENT_NOTE.get(lot.get('fulfilment', 'ship'), FULFILMENT_NOTE['ship'])}"
     )
+    lines.append(f"Cataloguer's notes: {lot['note']}")
+    record = "\n".join(lines)
 
     response = client.messages.parse(
         model=MODEL,
