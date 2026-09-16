@@ -155,15 +155,23 @@ function fulfilmentBadge(lot) {
   return `<span class="fulfil-tag fulfil-${lot.fulfilment}">${esc(f.short)}</span>`;
 }
 
+/** Percent saved against a verified part's current factory price. */
+function savingsPct(lot) {
+  return lot.newPriceUsd ? Math.round((1 - lot.priceUsd / lot.newPriceUsd) * 100) : null;
+}
+
 function lotCard(lot, index) {
   const g = gradeOf(lot.grade);
+  const save = savingsPct(lot);
   const belowEstimate = lot.priceUsd < lot.estHigh;
   const priceLine =
     lot.fulfilment === "collect"
       ? `<span class="lot-price">${i18n.price(lot.depositUsd)}<i>deposit</i></span>`
       : lot.fulfilment === "enquiry"
         ? `<span class="lot-price lot-price-poa">${i18n.t("priceOnEnquiry")}</span>`
-        : `<span class="lot-price">${i18n.price(lot.priceUsd)}</span>`;
+        : save
+          ? `<span class="lot-price">${i18n.price(lot.priceUsd)}<i>vs ${i18n.price(lot.newPriceUsd)} new</i></span>`
+          : `<span class="lot-price">${i18n.price(lot.priceUsd)}</span>`;
 
   return `
     <button class="lot plate-${lot.cat}" type="button" data-lot="${lot.id}" style="--stagger:${index % 12}">
@@ -172,17 +180,30 @@ function lotCard(lot, index) {
         ${glyph(lot.cat)}
         <span class="plate-tag">${i18n.t("lotNo")} ${lot.lot}</span>
         ${fulfilmentBadge(lot)}
-        ${belowEstimate && lot.fulfilment !== "enquiry" ? `<span class="plate-flag">Under estimate</span>` : ""}
+        ${
+          save
+            ? `<span class="plate-flag plate-flag-verified">Save ${save}%</span>`
+            : belowEstimate && lot.fulfilment !== "enquiry"
+              ? `<span class="plate-flag">Under estimate</span>`
+              : ""
+        }
       </div>
       <div class="lot-body">
         <span class="lot-title">${esc(lot.title)}</span>
-        <span class="lot-meta">${esc(lot.era)} · ${esc(lot.house)}</span>
+        <span class="lot-meta">
+          ${lot.verified ? `<span class="verified-chip" title="Serial-verified against OEM records">${checkIcon()} Verified OEM</span> · ` : ""}${esc(lot.era)} · ${esc(lot.house)}
+        </span>
         <span class="lot-foot">
           ${priceLine}
           <span class="grade ${g.cls}" title="${esc(g.label)}">${g.code}</span>
         </span>
       </div>
     </button>`;
+}
+
+function checkIcon() {
+  return `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>`;
 }
 
 export function renderCatalogue() {
@@ -225,6 +246,11 @@ function specRows(lot) {
 }
 
 function fulfilmentNote(lot) {
+  if (lot.verified) {
+    return `Genuine part, not a reproduction — the serial number is verified against the manufacturer's own records before this lot goes live. ${
+      lot.fulfilment === "freight" ? "Too large for parcel courier; palletised freight is quoted after checkout." : "Ships tracked and insured."
+    }`;
+  }
   if (lot.fulfilment === "ship") return null;
   if (lot.fulfilment === "freight")
     return "Too large for parcel courier. Palletised freight is quoted after checkout — nothing moves until you approve the cost.";
@@ -255,6 +281,9 @@ function openLot(id) {
       ${note ? `<div class="callout">${note}</div>` : ""}
       <table class="spec-table">
         <tbody>
+          ${lot.verified ? `<tr><th>OEM part</th><td>${esc(lot.oem)}</td></tr>` : ""}
+          ${lot.verified ? `<tr><th>Serial</th><td>${esc(lot.serial)}</td></tr>` : ""}
+          ${lot.newPriceUsd ? `<tr><th>Factory new price</th><td>${i18n.price(lot.newPriceUsd)} — this lot saves ${savingsPct(lot)}%</td></tr>` : ""}
           ${lot.fulfilment === "enquiry" ? "" : `<tr><th>${i18n.t("estimate")}</th><td>${i18n.price(lot.estLow)} – ${i18n.price(lot.estHigh)}</td></tr>`}
           <tr><th>${i18n.t("provenance")}</th><td>${esc(lot.house)} · ${esc(lot.sale)}</td></tr>
           <tr><th>${i18n.t("condition")}</th><td>${g.code} · ${esc(g.label)}</td></tr>

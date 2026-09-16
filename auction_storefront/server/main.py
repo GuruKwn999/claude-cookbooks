@@ -144,9 +144,9 @@ class AssistantRequest(BaseModel):
 class Lead(BaseModel):
     name: str
     email: EmailStr
-    kind: Literal["consign", "estate", "trade", "interior", "vehicle", "property", "sell"] = (
-        "consign"
-    )
+    kind: Literal[
+        "consign", "estate", "trade", "interior", "vehicle", "property", "parts", "sell"
+    ] = "consign"
     note: str = ""
 
 
@@ -401,13 +401,16 @@ async def stripe_webhook(request: Request) -> dict[str, str]:
 
 
 CURATOR_SYSTEM = """You are the curator of Hammer & Hearth, a one-person shop \
-that buys single lots at regional auctions and resells them — antiques, \
-jewellery, electronics, vehicles and property — across seven departments.
+that sources single lots — mostly bought at regional auctions, plus a line of \
+salvaged marine and heavy-equipment parts verified by serial number — and \
+resells them across eight departments: antiques, jewellery, art, electronics, \
+vehicles, property, tiny homes, and marine & heavy parts.
 
 How you talk:
 - Plain, specific, unhurried. You know these objects personally.
 - Name faults before virtues. A shopper who learns about the hairline — or the \
-overspray, or the failed roof — from you rather than from the parcel comes back.
+overspray, the failed roof, or the hour count on an engine — from you rather \
+than from the parcel comes back.
 - Never invent a lot, a price, a maker or a provenance. Everything you state \
 about an object must come from search_lots.
 - If nothing in the catalogue fits, say so and suggest the nearest department \
@@ -423,6 +426,10 @@ as final, since it becomes non-refundable once the buyer confirms after \
 inspection.
 - Property and land — never checkout. Point the shopper to "register interest" \
 on the listing, which reaches the owner directly.
+- Marine & heavy parts — a normal ship or freight checkout, but every part is \
+salvaged and its serial number is verified against the manufacturer's own \
+records before listing, which is the thing to lead with if a shopper asks \
+whether it's genuine.
 
 Policies you may state:
 - Shipping is tracked and insured worldwide. Over 20 kg is quoted as freight \
@@ -485,6 +492,15 @@ def search_lots(query: str, max_price_usd: float | None = None) -> str:
                     "dims": lot["dims"],
                     "provenance": f"{lot['house']} · {lot['sale']}",
                     "condition_note": lot["note"],
+                    **(
+                        {
+                            "verified_oem_part": lot.get("oem"),
+                            "verified_serial": lot.get("serial"),
+                            "factory_new_price_usd": lot.get("newPriceUsd"),
+                        }
+                        if lot.get("verified")
+                        else {}
+                    ),
                 }
                 for lot in hits
             ]

@@ -31,8 +31,9 @@ MODEL = "claude-opus-5"
 CATALOG = json.loads((Path(__file__).parent.parent / "server" / "lots.json").read_text())
 
 SYSTEM = """You write listing copy for Hammer & Hearth, a one-person shop selling \
-single lots bought at regional auctions — from teapots to houses, across seven \
-departments.
+single lots — mostly bought at regional auctions, plus a line of salvaged marine \
+and heavy-equipment parts verified by serial number — from teapots to houses to \
+engine blocks, across eight departments.
 
 The house style, which is the whole business:
 - Lead with the object, not an adjective. "A plan chest from a drawing office"
@@ -49,6 +50,9 @@ The house style, which is the whole business:
   say what the deposit does and that a balance follows; a property or land
   lot is never for sale on this page at all — invite the reader to register
   interest, not to purchase.
+- A verified part's whole pitch is that it is genuine, not a reproduction —
+  lead the listing with what was verified (the OEM part number, the serial)
+  and against what price it saves money, not with adjectives about condition.
 
 Length: `listing` is 90–140 words. `search_description` is under 155 characters
 and reads as a sentence, not keywords. `social` is under 240 characters and
@@ -85,14 +89,23 @@ def draft_copy(lot: dict, language: str, client: anthropic.Anthropic) -> Listing
         f"Period: {lot['era']}",
         f"Condition grade: {lot['grade']}",
         f"Asking price: ${lot['priceUsd']:,}",
-        f"Auction estimate was: ${lot['estLow']:,}–${lot['estHigh']:,}",
-        f"Bought at: {lot['house']}, {lot['sale']}",
+        f"{'Typical used-market range' if lot.get('verified') else 'Auction estimate was'}: "
+        f"${lot['estLow']:,}–${lot['estHigh']:,}",
+        f"{'Salvaged from' if lot.get('verified') else 'Bought at'}: {lot['house']}, {lot['sale']}",
         f"Dimensions: {lot['dims']}",
     ]
     if lot.get("weight"):
         lines.append(f"Weight: {lot['weight']}")
     if lot.get("depositUsd"):
         lines.append(f"Deposit to reserve: ${lot['depositUsd']:,}")
+    if lot.get("verified"):
+        lines.append(f"OEM part number: {lot['oem']}")
+        lines.append(f"Serial number (verified): {lot['serial']}")
+        if lot.get("newPriceUsd"):
+            saved = round((1 - lot["priceUsd"] / lot["newPriceUsd"]) * 100)
+            lines.append(
+                f"Current factory price: ${lot['newPriceUsd']:,} — this lot saves {saved}%"
+            )
     if lot.get("specs"):
         lines.append("Specification:")
         lines.extend(f"  {key}: {value}" for key, value in lot["specs"])

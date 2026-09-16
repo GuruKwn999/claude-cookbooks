@@ -40,6 +40,7 @@
   --dept-vehicles:   #8B8F99;
   --dept-property:   #5E9270;
   --dept-tinyhomes:  #B07C4C;
+  --dept-parts:      #4A9E93;
 
   --display: "Bodoni Moda", "Didot", "Times New Roman", serif;
   --body: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -80,6 +81,7 @@
   --dept-vehicles:   #5C616B;
   --dept-property:   #2E6E45;
   --dept-tinyhomes:  #8A5A2C;
+  --dept-parts:      #2C7A70;
 }
 
 * { box-sizing: border-box; }
@@ -521,6 +523,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .plate-cars, .plate-motorcycles, .plate-commercial { --pc: var(--dept-vehicles); }
 .plate-residential, .plate-land { --pc: var(--dept-property); }
 .plate-tinyhome { --pc: var(--dept-tinyhomes); }
+.plate-marine-engines, .plate-marine-electronics, .plate-drivetrain, .plate-hull-hardware { --pc: var(--dept-parts); }
 
 .plate-tag {
   position: absolute; inset-block-start: 9px; inset-inline-start: 9px;
@@ -534,6 +537,18 @@ button, input, select, textarea { font: inherit; color: inherit; }
   font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase;
   background: var(--oxblood); color: #FBEFF1; padding: 3px 7px;
 }
+.plate-flag-verified {
+  background: var(--dept-parts); color: #F0FBF9;
+  box-shadow: 0 0 16px -2px color-mix(in srgb, var(--dept-parts) 65%, transparent);
+}
+
+/* A small trust badge inline with the era/house line — genuine part,
+   verified against the manufacturer's own records, not a reproduction. */
+.verified-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  color: var(--dept-parts); font-weight: 600;
+}
+.verified-chip svg { flex: none; }
 
 .fulfil-tag {
   position: absolute; inset-block-end: 9px; inset-inline-start: 9px;

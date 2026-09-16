@@ -1,8 +1,9 @@
 """Score and route the enquiries that come in through the storefront.
 
-A one-person resale shop spanning seven departments — antiques, jewellery,
-electronics, vehicles and property among them — gets wildly different messages
-through the same contact form, worth wildly different amounts of attention:
+A one-person resale shop spanning eight departments — antiques, jewellery,
+electronics, vehicles, property and verified marine/heavy-equipment parts
+among them — gets wildly different messages through the same contact form,
+worth wildly different amounts of attention:
 
   * a household clearing a relative's estate — the best supply there is, and the
     person on the other end is usually grieving and in a hurry;
@@ -35,13 +36,16 @@ from pydantic import BaseModel, Field
 MODEL = "claude-opus-5"
 
 SYSTEM = """You triage inbound enquiries for Hammer & Hearth, a one-person shop \
-that buys single lots at regional auctions and resells them online. The owner \
-handles every enquiry personally and has limited hours, so your job is to say \
-which ones to open first and why.
+that sources single lots — mostly bought at regional auctions, plus a smaller \
+line of parts salvaged from marine and heavy-equipment breakups and verified \
+by serial number — and resells them online. The owner handles every enquiry \
+personally and has limited hours, so your job is to say which ones to open \
+first and why.
 
-The shop's seven departments: interiors & antiques, jewellery & watches, art &
-collectables, electronics & computing, vehicles, property & land, and tiny
-homes. A lead is worth routing to the right one, not just scored.
+The shop's eight departments: interiors & antiques, jewellery & watches, art &
+collectables, electronics & computing, vehicles, property & land, tiny homes,
+and marine & heavy parts. A lead is worth routing to the right one, not just
+scored.
 
 What the shop wants, in order:
 1. Estate clearances and probate sales — whole houses of unsorted goods, which
@@ -50,7 +54,8 @@ What the shop wants, in order:
 2. A single high-value item in its own right: a classic or well-kept modern
    car, a house or plot, vintage or tested working electronics, period
    furniture, jewellery, silver, studio ceramics, rugs, clocks or scientific
-   instruments.
+   instruments — or a salvage yard with genuine, identifiable parts off a
+   vessel or heavy equipment being broken up.
 3. Interior designers, set dressers and dealers sourcing for a project —
    repeat buyers, worth cultivating even on a slow first enquiry.
 4. Trade buyers wanting three or more pieces.
@@ -59,8 +64,9 @@ What the shop does not want, and should decline warmly:
 - Mass-market flat-pack furniture, dead or badly damaged consumer electronics
   with no collector or vintage interest, and appliances.
 - Reproductions sold as period, or anything where the sender is evasive about
-  where it came from — including a vehicle with no title or a property with
-  disputed ownership.
+  where it came from — including a vehicle with no title, a property with
+  disputed ownership, or a part with a filed, missing or unverifiable serial
+  number.
 - Requests to value something the sender has no intention of selling.
 
 Judge urgency on the sender's situation, not their enthusiasm. A probate
@@ -81,7 +87,15 @@ class LeadAssessment(BaseModel):
     )
     score: int = Field(ge=0, le=100, description="Fit against what the shop wants")
     segment: Literal[
-        "estate", "consignment", "vehicle", "property", "trade", "interior", "retail", "unclear"
+        "estate",
+        "consignment",
+        "vehicle",
+        "property",
+        "parts",
+        "trade",
+        "interior",
+        "retail",
+        "unclear",
     ]
     estimated_value_usd: int | None = Field(
         description="Rough value of the opportunity, or null when there is nothing to go on"
@@ -148,6 +162,15 @@ DEMO_LEADS = [
         "kind": "property",
         "note": "We own a two-acre plot with lapsed planning permission, "
         "considering listing it — no survey done yet, just testing the water.",
+    },
+    {
+        "name": "Dale Okafor",
+        "email": "dale@gulfcoastmarinesalvage.example",
+        "kind": "parts",
+        "note": "We break up 15-20 hulls a year and most of the drivetrain and "
+        "electronics comes off in good working order before we scrap the rest. "
+        "Currently just landfilling it or selling scrap weight for the metal. "
+        "Want to know what you'd need from us to list it properly.",
     },
     {
         "name": "Ines Fontana",

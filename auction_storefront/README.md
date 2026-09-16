@@ -69,10 +69,11 @@ window.HH_CONFIG = {
 
 ## Departments and fulfilment
 
-The catalogue spans seven departments — Interiors & Antiques, Jewellery &
+The catalogue spans eight departments — Interiors & Antiques, Jewellery &
 Watches, Art & Collectables, Electronics & Computing, Vehicles, Tiny Homes,
-and Property & Land — and a lot's **fulfilment type** decides how it can be
-bought, because a house and a teapot cannot share a checkout:
+Property & Land, and Marine & Heavy Parts — and a lot's **fulfilment type**
+decides how it can be bought, because a house and a teapot cannot share a
+checkout:
 
 | Fulfilment | Departments | What happens |
 |---|---|---|
@@ -86,6 +87,29 @@ Both the client (`store.js`'s `totals()`) and the server (`main.py`'s
 trusts the browser's arithmetic. `price_order()` also refuses to let a
 collection lot (vehicle) check out alongside a shipped or freighted one in
 the same cart, and refuses an enquiry lot outright.
+
+## Marine & Heavy Parts — a different sourcing story
+
+Every other department is bought at auction and sold on condition. This one
+is sourced differently: salvaged from vessels being broken up, then identified
+by serial number against the manufacturer's own parts records before it's
+listed. Two fields carry that story and nothing else:
+
+- **`oem` / `serial`** — the part number and the serial number, stated as
+  verified, not asserted. `agents/merchandising.py`'s house style rule for
+  this department is the same rule as everywhere else: never state what the
+  record doesn't support.
+- **`newPriceUsd`** — the part's current factory price, so "save 54%" is a
+  number computed from two real prices (`savingsPct()` in `store.js`) rather
+  than a marketing claim. The savings badge only appears when this field is
+  set; nothing else in the catalogue schema requires it.
+
+A lot with `verified: true` gets a teal "Verified OEM" chip and a distinct
+`plate-flag-verified` badge in place of the "under estimate" flag other
+departments use — different trust signal for a different kind of promise.
+Add a new part the same way as any other lot: give it a `cat` under `parts`
+in `DEPT_OF`, set `oem`/`serial`/`newPriceUsd`, and run
+`node scripts/export_catalog.mjs`.
 
 ## Payments
 
