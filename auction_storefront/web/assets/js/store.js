@@ -166,7 +166,7 @@ function lotCard(lot, index) {
         : `<span class="lot-price">${i18n.price(lot.priceUsd)}</span>`;
 
   return `
-    <button class="lot" type="button" data-lot="${lot.id}" style="--stagger:${index % 12}">
+    <button class="lot plate-${lot.cat}" type="button" data-lot="${lot.id}" style="--stagger:${index % 12}">
       <div class="plate plate-${lot.cat}">
         <span class="plate-sheen"></span>
         ${glyph(lot.cat)}
@@ -179,7 +179,7 @@ function lotCard(lot, index) {
         <span class="lot-meta">${esc(lot.era)} · ${esc(lot.house)}</span>
         <span class="lot-foot">
           ${priceLine}
-          <span class="grade ${g.cls}">${g.code} · ${esc(g.label)}</span>
+          <span class="grade ${g.cls}" title="${esc(g.label)}">${g.code}</span>
         </span>
       </div>
     </button>`;

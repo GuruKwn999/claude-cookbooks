@@ -230,9 +230,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
   position: relative;
   display: inline-flex; align-items: center; gap: 8px;
   background: var(--gilt); color: #17130A;
-  border: 0; border-radius: 2px; padding: 8px 14px;
+  border: 0; border-radius: 3px; padding: 8px 14px;
   font-weight: 600; font-size: 13px; cursor: pointer;
   letter-spacing: .02em;
+  box-shadow: 0 4px 16px -8px var(--gilt-dim);
   transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
 }
 .paddle-btn:hover { background: var(--gilt-bright); box-shadow: 0 8px 24px -10px var(--gilt-dim); transform: translateY(-1px); }
@@ -244,74 +245,136 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* ---------- Hero: aurora mesh, tracked by the pointer via --mx/--my ---------- */
 
+/* A fine technical grid behind the whole page — the texture that reads as
+   "instrument panel" rather than "printed page." Fixed so it doesn't scroll
+   with content, kept faint enough to never compete with anything on top. */
+.grid-texture {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--gilt) 14%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--gilt) 14%, transparent) 1px, transparent 1px);
+  background-size: 44px 44px;
+  opacity: .12;
+  mask-image: radial-gradient(120% 90% at 50% 0%, black, transparent 75%);
+}
+:root[data-theme="light"] .grid-texture { opacity: .18; }
+
 .hero {
   --mx: 30%; --my: 20%;
   position: relative;
   overflow: hidden;
   padding-inline: var(--gutter);
-  padding-block: clamp(56px, 10vw, 108px) clamp(36px, 6vw, 64px);
+  padding-block: clamp(64px, 11vw, 124px) clamp(40px, 6vw, 72px);
   border-bottom: 1px solid var(--line);
   display: grid; gap: 34px;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
   align-items: end;
   background: var(--ground);
+  isolation: isolate;
 }
 
-.hero::before {
-  content: "";
-  position: absolute; inset: -20%;
-  background:
-    radial-gradient(48% 46% at var(--mx) var(--my), color-mix(in srgb, var(--gilt) 34%, transparent), transparent 68%),
-    radial-gradient(38% 40% at 82% 78%, color-mix(in srgb, var(--oxblood) 26%, transparent), transparent 70%),
-    radial-gradient(60% 55% at 12% 92%, color-mix(in srgb, var(--dept-property) 16%, transparent), transparent 72%);
-  filter: blur(2px);
-  animation: aurora-drift 22s ease-in-out infinite alternate;
-  pointer-events: none;
+/* Three soft, glowing blobs standing in for a mesh gradient — heavily
+   blurred so they read as light, not as shapes, and layered with
+   mix-blend-mode so overlaps brighten instead of just averaging. */
+.orb {
+  position: absolute; z-index: 0; border-radius: 50%;
+  filter: blur(60px); pointer-events: none; mix-blend-mode: screen;
 }
-:root[data-theme="light"] .hero::before { opacity: .55; }
+:root[data-theme="light"] .orb { mix-blend-mode: multiply; filter: blur(70px); opacity: .8; }
 
-@keyframes aurora-drift {
+.orb-a {
+  width: 46vw; height: 46vw; max-width: 640px; max-height: 640px;
+  left: var(--mx); top: var(--my); transform: translate(-50%, -50%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--gilt-bright) 85%, transparent), transparent 72%);
+  opacity: .55;
+  transition: left .5s ease, top .5s ease;
+  animation: orb-pulse 7s ease-in-out infinite;
+}
+.orb-b {
+  width: 34vw; height: 34vw; max-width: 480px; max-height: 480px;
+  right: -6%; bottom: -14%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--oxblood) 90%, transparent), transparent 72%);
+  opacity: .5;
+  animation: orb-drift 24s ease-in-out infinite alternate;
+}
+.orb-c {
+  width: 26vw; height: 26vw; max-width: 380px; max-height: 380px;
+  left: 4%; bottom: -10%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--dept-property) 80%, transparent), transparent 72%);
+  opacity: .38;
+  animation: orb-drift 19s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes orb-pulse {
+  0%, 100% { opacity: .48; }
+  50% { opacity: .68; }
+}
+@keyframes orb-drift {
   0%   { transform: translate3d(0, 0, 0) scale(1); }
-  50%  { transform: translate3d(1.5%, -2%, 0) scale(1.04); }
-  100% { transform: translate3d(-1.5%, 1.5%, 0) scale(1.02); }
+  50%  { transform: translate3d(3%, -4%, 0) scale(1.08); }
+  100% { transform: translate3d(-3%, 3%, 0) scale(1); }
 }
-@media (prefers-reduced-motion: reduce) { .hero::before { animation: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .orb-a, .orb-b, .orb-c { animation: none; }
+}
 
-.hero > * { position: relative; }
+.hero > *:not(.orb) { position: relative; z-index: 1; }
 
 .hero h1 {
-  font-size: clamp(40px, 6.6vw, 74px);
+  font-size: clamp(42px, 7vw, 80px);
   line-height: 1.01;
   letter-spacing: -.015em;
   margin-block: 14px 16px;
 }
-.hero h1 em { font-style: italic; color: var(--gilt); }
+.hero h1 em {
+  font-style: italic;
+  background: linear-gradient(100deg, var(--gilt) 0%, var(--gilt-bright) 45%, var(--gilt) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  text-shadow: 0 0 46px color-mix(in srgb, var(--gilt) 55%, transparent);
+  animation: sheen-drift 6s linear infinite;
+}
+@keyframes sheen-drift { to { background-position: 200% center; } }
+@media (prefers-reduced-motion: reduce) { .hero h1 em { animation: none; } }
 
 .hero p.lede { color: var(--text-dim); max-width: 58ch; font-size: 16.5px; margin: 0; }
 
 .hero-stats {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
-  background: var(--line); border: 1px solid var(--line);
-  border-radius: 3px; overflow: hidden;
-  backdrop-filter: blur(6px);
+  background: var(--line); border: 1px solid var(--glass-line);
+  border-radius: 8px; overflow: hidden;
+  backdrop-filter: blur(16px) saturate(160%);
+  box-shadow: var(--glow-shadow);
 }
-.hero-stat { background: color-mix(in srgb, var(--ground) 88%, transparent); padding: 15px 16px; }
-.hero-stat b { display: block; font-family: var(--mono); font-size: 22px; color: var(--gilt); font-variant-numeric: tabular-nums; }
+.hero-stat { background: var(--glass); padding: 17px 18px; position: relative; }
+.hero-stat::before {
+  content: ""; position: absolute; inset-inline: 0; top: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gilt), transparent);
+  opacity: .7;
+}
+.hero-stat b {
+  display: block; font-family: var(--mono); font-size: 24px; color: var(--gilt-bright);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 18px var(--gilt-dim);
+}
 .hero-stat span { font-size: 11.5px; color: var(--text-faint); }
 
 /* ---------- Department strip ---------- */
 
 .dept-strip {
+  position: relative;
   padding-inline: var(--gutter);
-  padding-block: 26px;
+  padding-block: 30px;
   border-bottom: 1px solid var(--line);
   background: var(--ground-2);
+  overflow: hidden;
 }
 
 .dept-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
+  gap: 14px;
+  position: relative;
 }
 
 .dept-tile {
@@ -319,25 +382,47 @@ button, input, select, textarea { font: inherit; color: inherit; }
   position: relative;
   display: grid; gap: 8px; align-content: start;
   background: var(--glass);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(14px) saturate(160%);
   border: 1px solid var(--line-soft);
-  border-radius: 6px;
-  padding: 16px 16px 14px;
+  border-radius: 10px;
+  padding: 18px 18px 16px;
   cursor: pointer;
   text-align: start;
   text-decoration: none;
-  transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+  overflow: hidden;
+  transition: border-color .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+/* A soft glow sitting behind the icon, permanently on but faint — this is
+   what separates "card with an icon" from "card that looks powered on." */
+.dept-tile::before {
+  content: "";
+  position: absolute; top: -30%; left: -20%; width: 70%; height: 70%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--dc) 55%, transparent), transparent 70%);
+  filter: blur(20px);
+  opacity: .5;
+  transition: opacity .25s ease, transform .25s ease;
+  pointer-events: none;
 }
 .dept-tile:hover, .dept-tile:focus-visible {
-  border-color: color-mix(in srgb, var(--dc) 55%, var(--line));
-  transform: translateY(-3px);
-  box-shadow: 0 16px 34px -20px color-mix(in srgb, var(--dc) 55%, transparent);
+  border-color: color-mix(in srgb, var(--dc) 65%, var(--line));
+  transform: translateY(-4px);
+  box-shadow: 0 20px 44px -18px color-mix(in srgb, var(--dc) 60%, transparent), var(--glow-shadow);
 }
-.dept-tile svg { width: 22px; height: 22px; color: var(--dc); }
-.dept-tile b { font-family: var(--display); font-size: 15.5px; font-weight: 500; }
-.dept-tile span { font-size: 11.5px; color: var(--text-faint); }
-.dept-tile em { position: absolute; top: 14px; right: 14px; font-style: normal; font-family: var(--mono); font-size: 10.5px; color: var(--dc); }
+.dept-tile:hover::before { opacity: .85; transform: scale(1.25); }
+.dept-tile svg {
+  position: relative; width: 23px; height: 23px; color: var(--dc);
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--dc) 60%, transparent));
+}
+.dept-tile b { position: relative; font-family: var(--display); font-size: 15.5px; font-weight: 500; }
+.dept-tile span { position: relative; font-size: 11.5px; color: var(--text-faint); }
+.dept-tile em {
+  position: absolute; top: 14px; right: 14px; font-style: normal;
+  font-family: var(--mono); font-size: 10.5px; color: var(--dc);
+  text-shadow: 0 0 12px color-mix(in srgb, var(--dc) 50%, transparent);
+}
 [dir="rtl"] .dept-tile em { right: auto; left: 14px; }
+
+@media (prefers-reduced-motion: reduce) { .dept-tile::before { transition: none; } }
 
 /* ---------- Catalogue shell ---------- */
 
@@ -386,11 +471,12 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .lot {
   display: flex; flex-direction: column;
   background: var(--glass);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px) saturate(150%);
   border: 1px solid var(--line-soft);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 0; margin: 0; overflow: hidden;
   text-align: start; cursor: pointer;
+  box-shadow: 0 1px 0 0 color-mix(in srgb, var(--pc, var(--gilt)) 12%, transparent) inset;
   transition: border-color .22s ease, transform .22s ease, box-shadow .22s ease;
   opacity: 0; transform: translateY(16px);
   animation: lot-in .5s ease forwards;
@@ -400,9 +486,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 @media (prefers-reduced-motion: reduce) { .lot { animation: none; opacity: 1; transform: none; } }
 
 .lot:hover, .lot:focus-visible {
-  border-color: var(--glass-line);
-  transform: translateY(-4px);
-  box-shadow: var(--glow-shadow);
+  border-color: color-mix(in srgb, var(--pc, var(--glass-line)) 50%, var(--glass-line));
+  transform: translateY(-5px) scale(1.012);
+  box-shadow: 0 22px 48px -18px color-mix(in srgb, var(--pc, var(--gilt)) 45%, transparent), var(--glow-shadow);
 }
 .lot:hover .lot-title { color: var(--gilt-bright); }
 
@@ -472,7 +558,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .grade {
   font-family: var(--mono); font-size: 10px; letter-spacing: .08em;
-  padding: 2px 6px; border: 1px solid currentColor; border-radius: 2px;
+  padding: 2px 7px; border: 1px solid currentColor; border-radius: 2px;
+  white-space: nowrap; flex: none;
 }
 .grade.g-a { color: var(--ok); }
 .grade.g-b { color: var(--gilt); }
@@ -559,8 +646,11 @@ button, input, select, textarea { font: inherit; color: inherit; }
   transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease, background .18s ease;
 }
 .btn:hover { border-color: var(--gilt); }
-.btn-primary { background: var(--gilt); border-color: var(--gilt); color: #17130A; }
-.btn-primary:hover { background: var(--gilt-bright); border-color: var(--gilt-bright); box-shadow: 0 10px 28px -12px var(--gilt-dim); transform: translateY(-1px); }
+.btn-primary {
+  background: var(--gilt); border-color: var(--gilt); color: #17130A;
+  box-shadow: 0 6px 20px -10px var(--gilt-dim);
+}
+.btn-primary:hover { background: var(--gilt-bright); border-color: var(--gilt-bright); box-shadow: 0 12px 32px -12px var(--gilt-dim); transform: translateY(-1px); }
 .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
 .btn i { font-style: normal; font-size: 11px; opacity: .75; }
 
@@ -656,10 +746,21 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background: var(--surface-2); color: var(--text);
   border: 1px solid var(--gilt); border-radius: 999px;
   padding: 10px 17px; cursor: pointer; font-size: 13px; font-weight: 600;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow), 0 0 0 3px var(--gilt-dim);
   transition: background .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease;
+  animation: assistant-breathe 4s ease-in-out infinite;
 }
-.assistant-open:hover { background: var(--gilt); color: #17130A; box-shadow: var(--shadow), 0 0 0 6px var(--gilt-dim); transform: translateY(-2px); }
+.assistant-open:hover {
+  background: var(--gilt); color: #17130A;
+  box-shadow: var(--shadow), 0 0 0 6px var(--gilt-dim);
+  transform: translateY(-2px);
+  animation-play-state: paused;
+}
+@keyframes assistant-breathe {
+  0%, 100% { box-shadow: var(--shadow), 0 0 0 3px var(--gilt-dim); }
+  50% { box-shadow: var(--shadow), 0 0 0 7px transparent; }
+}
+@media (prefers-reduced-motion: reduce) { .assistant-open { animation: none; } }
 
 .chat-log { display: grid; gap: 13px; padding-block: 18px; }
 .bubble { max-width: 90%; padding: 11px 13px; border-radius: 3px; font-size: 13.5px; line-height: 1.5; }
