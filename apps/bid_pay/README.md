@@ -1,5 +1,8 @@
 # BidPay Delivery
 
+**© Pamela Logan 2020-2026. All rights reserved.** Created October 30, 2026. Last updated October 30, 2026.
+This folder is proprietary and is **not** covered by the repository's MIT License. See [LICENSE](LICENSE).
+
 A peer-to-peer delivery marketplace prototype: customers name the price they want to pay for a
 delivery, and drivers choose whether to accept it. No platform fee sits between them.
 
