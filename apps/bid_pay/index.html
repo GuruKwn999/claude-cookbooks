@@ -72,6 +72,13 @@
   .note { background: var(--surface-2); border-left: 3px solid var(--accent); padding: 10px 12px;
     border-radius: 6px; color: var(--muted); font-size: 13px; margin-bottom: 16px; }
   .hidden { display: none; }
+  .plans { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: 12px; }
+  .plan { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .plan.best { border-color: var(--accent); }
+  .plan .amt { font-size: 22px; font-weight: 700; }
+  .plan ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+  .member-on { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .badge { color: var(--accent); font-weight: 600; }
   #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--surface-2);
     border: 1px solid var(--accent); padding: 10px 16px; border-radius: 10px; opacity: 0;
     transition: opacity .2s; pointer-events: none; max-width: calc(100% - 32px); }
@@ -86,7 +93,7 @@
   <div class="bar">
     <div>
       <div class="brand">Bid<span>Pay</span> Delivery</div>
-      <div class="tag">You name the price. Drivers choose. No middleman fees.</div>
+      <div class="tag">You name the price. Drivers choose. Flat membership, zero per-order fees.</div>
     </div>
     <div class="roles" role="tablist">
       <button id="roleCustomer" class="on" onclick="setRole('customer')">I'm ordering</button>
@@ -99,7 +106,10 @@
   <!-- CUSTOMER VIEW -->
   <section id="customerView">
     <div class="note">Set the price you want to pay for delivery. 100% of your bid goes to the driver
-      who accepts it. Drivers can also send a counter-offer that you may accept or ignore.</div>
+      who accepts it. Drivers can also send a counter-offer that you may accept or ignore.
+      BidPay is funded by memberships only, never by fees on your orders.</div>
+    <h2>Customer membership</h2>
+    <div id="custMember" class="card"></div>
     <h2>Post a delivery bid</h2>
     <form class="card" id="orderForm" onsubmit="postOrder(event)">
       <div class="row">
@@ -135,6 +145,7 @@
       <label for="dName">Driver name</label>
       <input id="dName" maxlength="40" placeholder="Enter your name to accept jobs" oninput="saveDriver()">
     </div>
+    <div id="drvMember" class="card field"></div>
 
     <div class="stats">
       <div class="card stat"><div class="meta">Open bids</div><div class="v" id="stOpen">0</div></div>
@@ -171,12 +182,30 @@
 
 <script>
 const KEY = "bidpay.v1";
-let state = { orders: [], role: "customer", customer: "", driver: "" };
+let state = { orders: [], role: "customer", customer: "", driver: "", members: {} };
+
+// Membership plans: the app's only revenue. Edit prices and perks here.
+const PLANS = {
+  customer: [
+    { id: "c-month", name: "Monthly", price: 4.99, days: 30,
+      perks: ["Unlimited delivery bids", "Accept driver counter-offers", "Cancel anytime"] },
+    { id: "c-year", name: "Annual", price: 49.99, days: 365, best: true,
+      perks: ["Everything in Monthly", "2 months free"] },
+  ],
+  driver: [
+    { id: "d-month", name: "Monthly", price: 9.99, days: 30,
+      perks: ["Accept unlimited jobs", "Send counter-offers", "Keep 100% of every bid"] },
+    { id: "d-year", name: "Annual", price: 99.99, days: 365, best: true,
+      perks: ["Everything in Monthly", "2 months free"] },
+  ],
+};
+const DAY = 86400000;
 
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
     if (raw) state = Object.assign(state, JSON.parse(raw));
+    state.members ||= {};
   } catch (e) { /* storage unavailable: run in memory */ }
   if (!state.orders.length) seed();
 }
@@ -212,6 +241,58 @@ function toast(msg) {
   el.textContent = msg; el.classList.add("show");
   clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("show"), 2200);
 }
+// ---- Memberships ----
+function memberKey(role, name) { return role + ":" + name.toLowerCase(); }
+function membership(role, name) {
+  const m = name && state.members[memberKey(role, name)];
+  return m && m.expires > Date.now() ? m : null;
+}
+function subscribe(role, planId) {
+  const name = role === "driver" ? state.driver
+    : (document.getElementById("cName").value.trim() || state.customer);
+  if (!name) return toast("Enter your name first");
+  if (role === "customer") state.customer = name;
+  const plan = PLANS[role].find(p => p.id === planId);
+  const cur = membership(role, name);
+  const start = cur ? cur.expires : Date.now();
+  state.members[memberKey(role, name)] = { plan: plan.id, name: plan.name, price: plan.price,
+    expires: start + plan.days * DAY, autoRenew: true };
+  save(); toast(`${plan.name} membership active: ${money(plan.price)}`); render();
+}
+function toggleRenew(role) {
+  const name = role === "driver" ? state.driver : state.customer;
+  const m = membership(role, name);
+  m.autoRenew = !m.autoRenew; save();
+  toast(m.autoRenew ? "Auto-renew on" : "Auto-renew off; access continues until expiry"); render();
+}
+function needMember(role) {
+  const name = role === "driver" ? state.driver : state.customer;
+  if (membership(role, name)) return true;
+  toast(`An active ${role} membership is required`);
+  document.getElementById(role === "driver" ? "drvMember" : "custMember").scrollIntoView({ behavior: "smooth" });
+  return false;
+}
+function memberPanel(role, name) {
+  const m = membership(role, name);
+  if (m) return `<div class="member-on"><div><span class="badge">✓ ${m.name} member</span>
+      <div class="meta">${m.autoRenew ? "Renews" : "Expires"} ${new Date(m.expires).toLocaleDateString()}
+      · ${money(m.price)}</div></div>
+    <span><button class="btn sm" onclick="toggleRenew('${role}')">${m.autoRenew ? "Turn off auto-renew" : "Turn on auto-renew"}</button>
+    ${PLANS[role].filter(p => p.id !== m.plan).map(p =>
+      `<button class="btn sm" onclick="subscribe('${role}','${p.id}')">Add ${p.name}</button>`).join(" ")}</span></div>`;
+  return `<div class="meta">${role === "driver"
+      ? "Drivers need a membership to accept jobs or send counter-offers."
+      : "Customers need a membership to post delivery bids."}</div>
+    <div class="plans">${PLANS[role].map(p => `<div class="plan ${p.best ? "best" : ""}">
+      <div>${p.name}${p.best ? ' <span class="badge" style="font-size:12px">Best value</span>' : ""}</div>
+      <div class="amt">${money(p.price)}<span class="meta" style="font-size:13px;font-weight:400">
+        / ${p.days === 365 ? "year" : "month"}</span></div>
+      <ul>${p.perks.map(x => `<li>${x}</li>`).join("")}</ul>
+      <div class="actions"><button class="btn sm primary" onclick="subscribe('${role}','${p.id}')">Join ${p.name}</button></div>
+    </div>`).join("")}</div>
+    <div class="meta" style="margin-top:8px">Demo only: no real payment is taken.</div>`;
+}
+
 function find(id) { return state.orders.find(o => o.id === id); }
 const STATUS = { open: "Waiting for driver", accepted: "Driver on the way", picked_up: "Picked up",
   delivered: "Delivered", cancelled: "Cancelled" };
@@ -233,6 +314,7 @@ function postOrder(e) {
   const bid = parseFloat(v("bid"));
   if (!(bid >= 1)) return toast("Bid must be at least $1.00");
   state.customer = v("cName");
+  if (!needMember("customer")) return render();
   state.orders.unshift({
     id: uid(), customer: state.customer, item: v("item"), pickup: v("pickup"), dropoff: v("dropoff"),
     bid, miles: parseFloat(v("miles")) || null, notes: v("notes"), status: "open",
@@ -268,14 +350,14 @@ function needDriver() {
   return !!state.driver;
 }
 function acceptBid(id) {
-  if (!needDriver()) return;
+  if (!needDriver() || !needMember("driver")) return;
   const o = find(id);
   if (o.status !== "open") return toast("This bid is no longer available");
   o.status = "accepted"; o.driver = state.driver; o.offers = [];
   save(); toast("Job accepted — " + money(o.bid) + " is yours"); render();
 }
 function counter(id) {
-  if (!needDriver()) return;
+  if (!needDriver() || !needMember("driver")) return;
   const o = find(id);
   const n = parseFloat(prompt("Your counter-offer ($):", (o.bid + 3).toFixed(2)));
   if (!(n > 0)) return;
@@ -315,6 +397,7 @@ function orderCard(o, actions, extra = "") {
 
 function renderCustomer() {
   document.getElementById("cName").value ||= state.customer;
+  document.getElementById("custMember").innerHTML = memberPanel("customer", state.customer);
   const mine = state.orders.filter(o => !state.customer || o.customer === state.customer);
   const el = document.getElementById("myOrders");
   if (!mine.length) { el.innerHTML = `<div class="empty">No orders yet. Post a bid above.</div>`; return; }
@@ -337,6 +420,9 @@ function renderCustomer() {
 
 function renderDriver() {
   document.getElementById("dName").value ||= state.driver;
+  document.getElementById("drvMember").innerHTML = state.driver
+    ? `<h2 style="margin-top:0">Driver membership</h2>` + memberPanel("driver", state.driver)
+    : `<div class="meta">Enter your name to see driver membership plans.</div>`;
   const min = parseFloat(document.getElementById("minPay").value) || 0;
   const sort = document.getElementById("sortBy").value;
   const open = state.orders.filter(o => o.status === "open" && o.bid >= min);
