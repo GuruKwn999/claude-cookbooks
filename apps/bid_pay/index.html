@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BidPay Delivery</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface-2: #1f2630; --border: #2d3642;
+    --text: #e6edf3; --muted: #8b98a8; --accent: #3fb950; --accent-ink: #04140a;
+    --warn: #d29922; --danger: #f85149; --info: #58a6ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  header {
+    position: sticky; top: 0; z-index: 5; background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .bar { max-width: 960px; margin: 0 auto; padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .brand { font-weight: 700; font-size: 18px; }
+  .brand span { color: var(--accent); }
+  .tag { color: var(--muted); font-size: 13px; }
+  .roles { display: flex; background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 3px; }
+  .roles button { border: 0; background: transparent; color: var(--muted); padding: 7px 14px;
+    border-radius: 8px; cursor: pointer; font: inherit; }
+  .roles button.on { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  main { max-width: 960px; margin: 0 auto; padding: 20px 16px 40px; }
+  h2 { font-size: 17px; margin: 28px 0 12px; }
+  h2:first-child { margin-top: 0; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  form .row { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 560px) { form .row { grid-template-columns: 1fr; } }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+  input, textarea, select {
+    width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--border);
+    border-radius: 8px; padding: 9px 10px; font: inherit;
+  }
+  input:focus, textarea:focus, select:focus { outline: 2px solid var(--info); outline-offset: -1px; }
+  .field { margin-bottom: 12px; }
+  .btn { border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+    padding: 8px 14px; border-radius: 8px; cursor: pointer; font: inherit; }
+  .btn:hover { border-color: var(--muted); }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+  .btn.danger { color: var(--danger); }
+  .btn.sm { padding: 5px 10px; font-size: 13px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .order h3 { margin: 0 0 4px; font-size: 16px; }
+  .price { font-size: 24px; font-weight: 700; color: var(--accent); }
+  .meta { color: var(--muted); font-size: 13px; }
+  .route { margin: 8px 0; font-size: 14px; }
+  .route div::before { display: inline-block; width: 52px; color: var(--muted); }
+  .route .from::before { content: "Pickup"; }
+  .route .to::before { content: "Drop"; }
+  .pill { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 99px;
+    border: 1px solid currentColor; white-space: nowrap; }
+  .s-open { color: var(--info); } .s-accepted { color: var(--warn); }
+  .s-picked_up { color: var(--warn); } .s-delivered { color: var(--accent); }
+  .s-cancelled { color: var(--muted); }
+  .offers { margin-top: 10px; border-top: 1px dashed var(--border); padding-top: 10px; }
+  .offer { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 4px 0; }
+  .stats { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .stat .v { font-size: 22px; font-weight: 700; }
+  .empty { color: var(--muted); padding: 20px; text-align: center; border: 1px dashed var(--border); border-radius: 12px; }
+  .toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; margin-bottom: 12px; }
+  .toolbar .field { margin: 0; min-width: 150px; }
+  .note { background: var(--surface-2); border-left: 3px solid var(--accent); padding: 10px 12px;
+    border-radius: 6px; color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+  .hidden { display: none; }
+  #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--surface-2);
+    border: 1px solid var(--accent); padding: 10px 16px; border-radius: 10px; opacity: 0;
+    transition: opacity .2s; pointer-events: none; max-width: calc(100% - 32px); }
+  #toast.show { opacity: 1; }
+  footer { border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; text-align: center;
+    padding: 20px 16px; }
+  footer p { max-width: 760px; margin: 4px auto; }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div>
+      <div class="brand">Bid<span>Pay</span> Delivery</div>
+      <div class="tag">You name the price. Drivers choose. No middleman fees.</div>
+    </div>
+    <div class="roles" role="tablist">
+      <button id="roleCustomer" class="on" onclick="setRole('customer')">I'm ordering</button>
+      <button id="roleDriver" onclick="setRole('driver')">I'm driving</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- CUSTOMER VIEW -->
+  <section id="customerView">
+    <div class="note">Set the price you want to pay for delivery. 100% of your bid goes to the driver
+      who accepts it. Drivers can also send a counter-offer that you may accept or ignore.</div>
+    <h2>Post a delivery bid</h2>
+    <form class="card" id="orderForm" onsubmit="postOrder(event)">
+      <div class="row">
+        <div class="field"><label for="cName">Your name</label>
+          <input id="cName" required maxlength="40" placeholder="e.g. Jordan"></div>
+        <div class="field"><label for="item">What needs delivering?</label>
+          <input id="item" required maxlength="80" placeholder="e.g. Groceries from Fresh Market"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="pickup">Pickup address</label>
+          <input id="pickup" required maxlength="100"></div>
+        <div class="field"><label for="dropoff">Drop-off address</label>
+          <input id="dropoff" required maxlength="100"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="bid">Your delivery bid ($)</label>
+          <input id="bid" type="number" min="1" step="0.50" required placeholder="12.00"></div>
+        <div class="field"><label for="miles">Approx. distance (miles)</label>
+          <input id="miles" type="number" min="0.1" step="0.1" placeholder="4.5"></div>
+      </div>
+      <div class="field"><label for="notes">Notes for the driver (optional)</label>
+        <textarea id="notes" rows="2" maxlength="200" placeholder="Gate code, leave at door, etc."></textarea></div>
+      <button class="btn primary" type="submit">Post my bid</button>
+    </form>
+
+    <h2>My orders</h2>
+    <div id="myOrders" class="grid"></div>
+  </section>
+
+  <!-- DRIVER VIEW -->
+  <section id="driverView" class="hidden">
+    <div class="card field">
+      <label for="dName">Driver name</label>
+      <input id="dName" maxlength="40" placeholder="Enter your name to accept jobs" oninput="saveDriver()">
+    </div>
+
+    <div class="stats">
+      <div class="card stat"><div class="meta">Open bids</div><div class="v" id="stOpen">0</div></div>
+      <div class="card stat"><div class="meta">My active jobs</div><div class="v" id="stActive">0</div></div>
+      <div class="card stat"><div class="meta">Delivered</div><div class="v" id="stDone">0</div></div>
+      <div class="card stat"><div class="meta">Total earned</div><div class="v" id="stEarned">$0.00</div></div>
+    </div>
+
+    <h2>My active deliveries</h2>
+    <div id="driverActive" class="grid"></div>
+
+    <h2>Open bids near you</h2>
+    <div class="toolbar">
+      <div class="field"><label for="minPay">Minimum pay ($)</label>
+        <input id="minPay" type="number" min="0" step="1" value="0" oninput="render()"></div>
+      <div class="field"><label for="sortBy">Sort by</label>
+        <select id="sortBy" onchange="render()">
+          <option value="pay">Highest pay</option>
+          <option value="permile">Best $ / mile</option>
+          <option value="new">Newest</option>
+        </select></div>
+    </div>
+    <div id="openBids" class="grid"></div>
+  </section>
+</main>
+
+<footer>
+  <p>&copy; Pamela Logan 2020-2026: All rights reserved. Unauthorized use and/or duplication of this
+    material without express and written permission is strictly prohibited.</p>
+  <p>No part of this publication may be reproduced, distributed, or transmitted in any form or by any
+    means without the prior written permission of the copyright holder.</p>
+</footer>
+<div id="toast"></div>
+
+<script>
+const KEY = "bidpay.v1";
+let state = { orders: [], role: "customer", customer: "", driver: "" };
+
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) state = Object.assign(state, JSON.parse(raw));
+  } catch (e) { /* storage unavailable: run in memory */ }
+  if (!state.orders.length) seed();
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+}
+function seed() {
+  const now = Date.now();
+  state.orders = [
+    { id: uid(), customer: "Maria", item: "Takeout from Golden Wok", pickup: "112 Main St",
+      dropoff: "48 Oak Ave", bid: 9, miles: 2.8, notes: "Ring bell twice", status: "open",
+      driver: null, offers: [], created: now - 600000 },
+    { id: uid(), customer: "Devon", item: "Pharmacy pickup", pickup: "CVS, 900 Elm Rd",
+      dropoff: "17 Birch Ln Apt 3", bid: 14, miles: 6.1, notes: "", status: "open",
+      driver: null, offers: [], created: now - 300000 },
+    { id: uid(), customer: "Aisha", item: "Hardware store order", pickup: "Ace, 55 Market St",
+      dropoff: "302 Pine Ct", bid: 18.5, miles: 9.4, notes: "Heavy box", status: "open",
+      driver: null, offers: [], created: now - 60000 },
+  ];
+}
+function uid() { return Math.random().toString(36).slice(2, 10); }
+function money(n) { return "$" + Number(n).toFixed(2); }
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function ago(t) {
+  const m = Math.round((Date.now() - t) / 60000);
+  return m < 1 ? "just now" : m < 60 ? m + " min ago" : Math.round(m / 60) + " hr ago";
+}
+function toast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg; el.classList.add("show");
+  clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("show"), 2200);
+}
+function find(id) { return state.orders.find(o => o.id === id); }
+const STATUS = { open: "Waiting for driver", accepted: "Driver on the way", picked_up: "Picked up",
+  delivered: "Delivered", cancelled: "Cancelled" };
+
+function setRole(r) {
+  state.role = r; save();
+  document.getElementById("roleCustomer").classList.toggle("on", r === "customer");
+  document.getElementById("roleDriver").classList.toggle("on", r === "driver");
+  document.getElementById("customerView").classList.toggle("hidden", r !== "customer");
+  document.getElementById("driverView").classList.toggle("hidden", r !== "driver");
+  render();
+}
+function saveDriver() { state.driver = document.getElementById("dName").value.trim(); save(); render(); }
+
+// ---- Customer actions ----
+function postOrder(e) {
+  e.preventDefault();
+  const v = id => document.getElementById(id).value.trim();
+  const bid = parseFloat(v("bid"));
+  if (!(bid >= 1)) return toast("Bid must be at least $1.00");
+  state.customer = v("cName");
+  state.orders.unshift({
+    id: uid(), customer: state.customer, item: v("item"), pickup: v("pickup"), dropoff: v("dropoff"),
+    bid, miles: parseFloat(v("miles")) || null, notes: v("notes"), status: "open",
+    driver: null, offers: [], created: Date.now(),
+  });
+  save();
+  e.target.reset();
+  document.getElementById("cName").value = state.customer;
+  toast("Bid posted — drivers can see it now");
+  render();
+}
+function raiseBid(id) {
+  const o = find(id);
+  const n = parseFloat(prompt("New bid amount ($):", (o.bid + 2).toFixed(2)));
+  if (!(n > 0)) return;
+  o.bid = n; save(); toast("Bid updated to " + money(n)); render();
+}
+function acceptOffer(id, idx) {
+  const o = find(id), off = o.offers[idx];
+  o.bid = off.amount; o.driver = off.driver; o.status = "accepted"; o.offers = [];
+  save(); toast(off.driver + " accepted at " + money(off.amount)); render();
+}
+function declineOffer(id, idx) { find(id).offers.splice(idx, 1); save(); render(); }
+function cancelOrder(id) {
+  if (!confirm("Cancel this order?")) return;
+  find(id).status = "cancelled"; save(); render();
+}
+function removeOrder(id) { state.orders = state.orders.filter(o => o.id !== id); save(); render(); }
+
+// ---- Driver actions ----
+function needDriver() {
+  if (!state.driver) { toast("Enter your driver name first"); document.getElementById("dName").focus(); }
+  return !!state.driver;
+}
+function acceptBid(id) {
+  if (!needDriver()) return;
+  const o = find(id);
+  if (o.status !== "open") return toast("This bid is no longer available");
+  o.status = "accepted"; o.driver = state.driver; o.offers = [];
+  save(); toast("Job accepted — " + money(o.bid) + " is yours"); render();
+}
+function counter(id) {
+  if (!needDriver()) return;
+  const o = find(id);
+  const n = parseFloat(prompt("Your counter-offer ($):", (o.bid + 3).toFixed(2)));
+  if (!(n > 0)) return;
+  o.offers = o.offers.filter(x => x.driver !== state.driver);
+  o.offers.push({ driver: state.driver, amount: n, at: Date.now() });
+  save(); toast("Counter-offer sent to " + o.customer); render();
+}
+function advance(id) {
+  const o = find(id);
+  o.status = o.status === "accepted" ? "picked_up" : "delivered";
+  if (o.status === "delivered") o.deliveredAt = Date.now();
+  save(); toast(o.status === "delivered" ? "Delivered! " + money(o.bid) + " earned" : "Marked picked up");
+  render();
+}
+function release(id) {
+  if (!confirm("Release this job back to other drivers?")) return;
+  const o = find(id); o.status = "open"; o.driver = null; save(); render();
+}
+
+// ---- Rendering ----
+function orderCard(o, actions, extra = "") {
+  const perMile = o.miles ? ` · ${money(o.bid / o.miles)}/mi` : "";
+  return `<div class="card order">
+    <div style="display:flex;justify-content:space-between;gap:8px;align-items:start">
+      <div><h3>${esc(o.item)}</h3>
+        <div class="meta">${esc(o.customer)} · ${ago(o.created)}${o.miles ? " · " + o.miles + " mi" : ""}</div></div>
+      <span class="pill s-${o.status}">${STATUS[o.status]}</span>
+    </div>
+    <div class="price">${money(o.bid)}<span class="meta" style="font-size:13px;font-weight:400">${perMile}</span></div>
+    <div class="route"><div class="from">${esc(o.pickup)}</div><div class="to">${esc(o.dropoff)}</div></div>
+    ${o.notes ? `<div class="meta">“${esc(o.notes)}”</div>` : ""}
+    ${o.driver ? `<div class="meta">Driver: <strong style="color:var(--text)">${esc(o.driver)}</strong></div>` : ""}
+    ${extra}
+    ${actions ? `<div class="actions">${actions}</div>` : ""}
+  </div>`;
+}
+
+function renderCustomer() {
+  document.getElementById("cName").value ||= state.customer;
+  const mine = state.orders.filter(o => !state.customer || o.customer === state.customer);
+  const el = document.getElementById("myOrders");
+  if (!mine.length) { el.innerHTML = `<div class="empty">No orders yet. Post a bid above.</div>`; return; }
+  el.innerHTML = mine.map(o => {
+    let a = "", extra = "";
+    if (o.status === "open") {
+      a = `<button class="btn sm" onclick="raiseBid('${o.id}')">Change bid</button>
+           <button class="btn sm danger" onclick="cancelOrder('${o.id}')">Cancel</button>`;
+      if (o.offers.length) extra = `<div class="offers"><div class="meta">Counter-offers</div>` +
+        o.offers.map((f, i) => `<div class="offer"><span>${esc(f.driver)} — <strong>${money(f.amount)}</strong></span>
+          <span><button class="btn sm primary" onclick="acceptOffer('${o.id}',${i})">Accept</button>
+          <button class="btn sm" onclick="declineOffer('${o.id}',${i})">Decline</button></span></div>`).join("") +
+        `</div>`;
+    } else if (o.status === "delivered" || o.status === "cancelled") {
+      a = `<button class="btn sm" onclick="removeOrder('${o.id}')">Remove</button>`;
+    }
+    return orderCard(o, a, extra);
+  }).join("");
+}
+
+function renderDriver() {
+  document.getElementById("dName").value ||= state.driver;
+  const min = parseFloat(document.getElementById("minPay").value) || 0;
+  const sort = document.getElementById("sortBy").value;
+  const open = state.orders.filter(o => o.status === "open" && o.bid >= min);
+  open.sort((a, b) => sort === "pay" ? b.bid - a.bid
+    : sort === "new" ? b.created - a.created
+    : (b.miles ? b.bid / b.miles : 0) - (a.miles ? a.bid / a.miles : 0));
+  const me = state.driver;
+  const active = state.orders.filter(o => me && o.driver === me && ["accepted", "picked_up"].includes(o.status));
+  const done = state.orders.filter(o => me && o.driver === me && o.status === "delivered");
+
+  document.getElementById("stOpen").textContent = state.orders.filter(o => o.status === "open").length;
+  document.getElementById("stActive").textContent = active.length;
+  document.getElementById("stDone").textContent = done.length;
+  document.getElementById("stEarned").textContent = money(done.reduce((s, o) => s + o.bid, 0));
+
+  document.getElementById("driverActive").innerHTML = active.length ? active.map(o => orderCard(o,
+    `<button class="btn sm primary" onclick="advance('${o.id}')">${o.status === "accepted" ? "Mark picked up" : "Mark delivered"}</button>
+     ${o.status === "accepted" ? `<button class="btn sm danger" onclick="release('${o.id}')">Release job</button>` : ""}`
+  )).join("") : `<div class="empty">No active jobs. Accept a bid below.</div>`;
+
+  document.getElementById("openBids").innerHTML = open.length ? open.map(o => {
+    const mine = o.offers.find(f => f.driver === me);
+    return orderCard(o,
+      `<button class="btn sm primary" onclick="acceptBid('${o.id}')">Accept ${money(o.bid)}</button>
+       <button class="btn sm" onclick="counter('${o.id}')">${mine ? "Update counter" : "Counter-offer"}</button>`,
+      mine ? `<div class="meta" style="margin-top:6px">Your counter: ${money(mine.amount)} (pending)</div>` : "");
+  }).join("") : `<div class="empty">No open bids match your filter.</div>`;
+}
+
+function render() { state.role === "driver" ? renderDriver() : renderCustomer(); }
+
+load();
+setRole(state.role);
+setInterval(render, 60000);
+</script>
+</body>
+</html>
