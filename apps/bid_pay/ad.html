@@ -1,0 +1,274 @@
+<title>BidPay Delivery Ad</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  /* Layout: a poster-style hero, then a receipt face-off, two audience panels, plans, and ad copy. */
+  :root {
+    --ink: #120f1a;        /* page ground: deep aubergine-black */
+    --panel: #1c1828;      /* raised surfaces */
+    --line: #332c45;       /* hairlines */
+    --cream: #f3ecdf;      /* main text */
+    --dim: #a59cb8;        /* secondary text */
+    --saffron: #ffb627;    /* the one loud color: price, savings */
+    --plum: #c38dff;       /* driver side */
+    --strike: #ff6b6b;     /* fees crossed out */
+    --display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+    --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--ink); color: var(--cream); font: 16px/1.6 var(--body);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; }
+  section { padding-block: 56px; border-top: 1px solid var(--line); }
+  h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+  .eyebrow { font: 600 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  p { margin: 0; max-width: 62ch; }
+  .money { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  /* Hero */
+  .hero { padding-block: 48px 56px; border-top: 0; display: grid; gap: 20px; }
+  .logo { font: 800 20px/1 var(--display); font-stretch: 110%; }
+  .logo b { color: var(--saffron); }
+  .hero h1 {
+    font-size: clamp(44px, 9vw, 104px); line-height: .92; font-weight: 900; font-stretch: 72%;
+    text-transform: uppercase; letter-spacing: -.01em;
+  }
+  .hero h1 em { font-style: normal; color: var(--saffron); }
+  .hero .lede { font-size: clamp(17px, 2.2vw, 21px); color: var(--cream); }
+  .hero .lede span { color: var(--dim); }
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+  .btn {
+    display: inline-block; text-decoration: none; font: 700 15px/1 var(--body); padding: 14px 20px;
+    border-radius: 999px; border: 2px solid var(--saffron); color: var(--ink); background: var(--saffron);
+    cursor: pointer;
+  }
+  .btn.ghost { background: transparent; color: var(--cream); border-color: var(--line); }
+  .btn.plum { background: var(--plum); border-color: var(--plum); }
+  .btn:focus-visible, .copy:focus-visible { outline: 3px solid var(--cream); outline-offset: 3px; }
+
+  /* Receipts */
+  .head { display: grid; gap: 10px; margin-bottom: 28px; }
+  .head h2 { font-size: clamp(30px, 5vw, 48px); font-weight: 800; font-stretch: 85%; line-height: 1.02; }
+  .receipts { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); align-items: start; }
+  .receipt {
+    background: var(--cream); color: var(--ink); padding: 22px 22px 26px; font: 14px/1.7 var(--mono);
+    font-variant-numeric: tabular-nums; min-width: 0;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), 95% 100%, 90% calc(100% - 8px), 85% 100%, 80% calc(100% - 8px),
+      75% 100%, 70% calc(100% - 8px), 65% 100%, 60% calc(100% - 8px), 55% 100%, 50% calc(100% - 8px), 45% 100%,
+      40% calc(100% - 8px), 35% 100%, 30% calc(100% - 8px), 25% 100%, 20% calc(100% - 8px), 15% 100%,
+      10% calc(100% - 8px), 5% 100%, 0 calc(100% - 8px));
+  }
+  .receipt.old { background: var(--panel); color: var(--dim); }
+  .receipt h3 { font: 700 13px/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
+  .receipt .row { display: flex; justify-content: space-between; gap: 12px; }
+  .receipt .fee { color: var(--strike); }
+  .receipt .zero { color: #2f7d3a; font-weight: 600; }
+  .receipt .total { border-top: 1px dashed currentColor; margin-top: 10px; padding-top: 10px; font-weight: 600; font-size: 16px; }
+  .receipt.old .total { color: var(--cream); }
+  .savings { margin-top: 20px; display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+  .savings .big { font: 900 clamp(40px, 7vw, 64px)/1 var(--display); font-stretch: 75%; color: var(--saffron); }
+  .fine { font-size: 13px; color: var(--dim); margin-top: 14px; }
+
+  /* Audiences */
+  .sides { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .side { padding: 26px; border: 1px solid var(--line); border-radius: 4px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+  .side h3 { font-size: 28px; font-weight: 800; font-stretch: 85%; line-height: 1.05; }
+  .side.cust h3 span { color: var(--saffron); }
+  .side.drv h3 span { color: var(--plum); }
+  .side ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .side li { padding-left: 22px; position: relative; }
+  .side li::before { content: "→"; position: absolute; left: 0; color: var(--dim); }
+  .payout { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; font: 14px/1.6 var(--mono);
+    font-variant-numeric: tabular-nums; background: var(--panel); padding: 14px 16px; }
+  .payout .k { color: var(--dim); }
+  .payout .hi { color: var(--plum); font-weight: 600; }
+
+  /* Plans */
+  .plans { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 560px; }
+  .table-scroll { overflow-x: auto; }
+  .plans th, .plans td { text-align: left; padding: 14px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .plans th { font: 600 12px/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+  .plans td.money { white-space: nowrap; }
+  .plans .member { color: var(--saffron); font-weight: 600; }
+  .plans tbody th { font: 700 16px/1.3 var(--body); letter-spacing: 0; text-transform: none; color: var(--cream); }
+
+  /* Ad copy */
+  .copies { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .copycard { background: var(--panel); padding: 20px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+  .copycard textarea {
+    width: 100%; resize: vertical; background: var(--ink); color: var(--cream); border: 1px solid var(--line);
+    font: 14px/1.55 var(--body); padding: 12px; min-height: 150px;
+  }
+  .copy { justify-self: start; font: 600 13px/1 var(--body); padding: 9px 14px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--line); background: transparent; color: var(--cream); }
+  .copy.done { border-color: var(--saffron); color: var(--saffron); }
+
+  footer { border-top: 1px solid var(--line); padding-block: 28px 40px; color: var(--dim); font-size: 12px; display: grid; gap: 6px; }
+  footer p { max-width: 90ch; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero h1 em { display: inline-block; animation: pop .7s cubic-bezier(.2, 1.4, .4, 1) .15s both; }
+    @keyframes pop { from { transform: translateY(.15em) scale(.96); } to { transform: none; } }
+  }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="logo">Bid<b>Pay</b> Delivery</div>
+    <h1>You name the price.<br><em>Keep the difference.</em></h1>
+    <p class="lede">Customers set what they want to pay for delivery. Drivers choose the jobs they want.
+      <span>With a membership, nobody in the middle takes a cut.</span></p>
+    <div class="cta-row">
+      <a class="btn" href="#plans">Order for less</a>
+      <a class="btn plum" href="#drivers">Drive and earn more</a>
+    </div>
+  </header>
+
+  <section>
+    <div class="head">
+      <div class="eyebrow">Same dinner, two receipts</div>
+      <h2>Where your money goes</h2>
+      <p>On a typical delivery app, service fees, delivery fees and menu markups pile up before the food
+        reaches you. On BidPay, you see the restaurant's own price plus the one delivery price you chose.</p>
+    </div>
+    <div class="receipts">
+      <div class="receipt old">
+        <h3>Typical delivery app</h3>
+        <div class="row"><span>Food (menu markup)</span><span>$28.75</span></div>
+        <div class="row fee"><span>Delivery fee</span><span>$3.99</span></div>
+        <div class="row fee"><span>Service fee</span><span>$4.31</span></div>
+        <div class="row fee"><span>Small-order / misc.</span><span>$2.00</span></div>
+        <div class="row total"><span>Total</span><span>$39.05</span></div>
+      </div>
+      <div class="receipt">
+        <h3>BidPay member</h3>
+        <div class="row"><span>Food (restaurant price)</span><span>$25.00</span></div>
+        <div class="row"><span>Your delivery bid</span><span>$8.00</span></div>
+        <div class="row zero"><span>Service fee</span><span>$0.00</span></div>
+        <div class="row zero"><span>Other fees</span><span>$0.00</span></div>
+        <div class="row total"><span>Total</span><span>$33.00</span></div>
+      </div>
+    </div>
+    <div class="savings">
+      <span class="big money">$6.05</span>
+      <span>saved on one dinner, and the full $8.00 delivery bid goes to your driver.</span>
+    </div>
+    <p class="fine">Illustrative example. Fees and markups on other apps vary by market, restaurant and order.
+      Tip amounts not included.</p>
+  </section>
+
+  <section>
+    <div class="sides">
+      <div class="side cust">
+        <div class="eyebrow">For customers</div>
+        <h3>Pay less for <span>food and delivery.</span></h3>
+        <ul>
+          <li>Set the delivery price yourself. Raise it if you're in a hurry.</li>
+          <li>Pay the restaurant's real price, with no markup added by us.</li>
+          <li>Members pay a $0 service fee on every order.</li>
+          <li>See any driver counter-offer and accept it only if you like it.</li>
+        </ul>
+      </div>
+      <div class="side drv" id="drivers">
+        <div class="eyebrow">For drivers</div>
+        <h3>Earn more. <span>Share less.</span></h3>
+        <ul>
+          <li>See the customer's price before you accept. No surprises.</li>
+          <li>Pick the jobs worth your time, or send a counter-offer.</li>
+          <li>Members keep 100% of every bid. A flat membership replaces the cut.</li>
+        </ul>
+        <div class="payout">
+          <span class="k">Customer's bid</span><span class="money">$12.00</span>
+          <span class="k">Pay-as-you-go fee (15%)</span><span class="money">−$1.80</span>
+          <span class="k">BidPay member fee</span><span class="money hi">$0.00</span>
+          <span class="k">A member takes home</span><span class="money hi">$12.00</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="plans">
+    <div class="head">
+      <div class="eyebrow">Membership pays for itself</div>
+      <h2>One flat price instead of a cut of every order</h2>
+      <p>Not ready to join? Pay as you go with a small fee per delivery, charged only when a delivery is completed.</p>
+    </div>
+    <div class="table-scroll">
+      <table class="plans">
+        <thead>
+          <tr><th scope="col"></th><th scope="col">Pay as you go</th><th scope="col">Monthly</th><th scope="col">Annual</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Customers</th><td class="money">$2.49 per delivery</td>
+            <td class="money member">$4.99, no fees</td><td class="money member">$49.99, no fees</td></tr>
+          <tr><th scope="row">Drivers</th><td class="money">15% of each bid</td>
+            <td class="money member">$9.99, keep 100%</td><td class="money member">$99.99, keep 100%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">Three deliveries a month costs a pay-as-you-go customer $7.47 in fees, compared with $4.99 for a
+      membership. Ten $12 jobs costs a pay-as-you-go driver $18.00, compared with $9.99 for a membership.</p>
+  </section>
+
+  <section>
+    <div class="head">
+      <div class="eyebrow">Ready to post</div>
+      <h2>Ad copy</h2>
+      <p>Edit any of these, then copy them into a social post, flyer or listing.</p>
+    </div>
+    <div class="copies">
+      <div class="copycard">
+        <div class="eyebrow">Social post: customers</div>
+        <textarea id="copyCustomer" aria-label="Ad copy for customers">Tired of delivery fees eating your dinner budget? 🍔
+On BidPay, YOU name the delivery price. Members pay $0 service fees and the restaurant's real menu price, with no markups.
+Same food. Smaller bill. Join BidPay Delivery today.</textarea>
+        <button class="copy" type="button" data-for="copyCustomer">Copy text</button>
+      </div>
+      <div class="copycard">
+        <div class="eyebrow">Social post: drivers</div>
+        <textarea id="copyDriver" aria-label="Ad copy for drivers">Drivers: stop handing over a cut of every delivery. 🚗
+On BidPay, you see the price up front, choose your jobs, and members keep 100% of every bid.
+One flat membership. No middleman. Start driving with BidPay Delivery.</textarea>
+        <button class="copy" type="button" data-for="copyDriver">Copy text</button>
+      </div>
+      <div class="copycard">
+        <div class="eyebrow">Flyer headline</div>
+        <textarea id="copyFlyer" aria-label="Flyer headline">BIDPAY DELIVERY
+You name the price. Drivers keep the pay.
+Customers save on food and delivery. Drivers earn more.
+Membership, not middlemen.</textarea>
+        <button class="copy" type="button" data-for="copyFlyer">Copy text</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; Pamela Logan 2020-2026: All rights reserved. Unauthorized use and/or duplication of this material
+      without express and written permission is strictly prohibited.</p>
+    <p>No part of this publication may be reproduced, distributed, or transmitted in any form or by any means
+      without the prior written permission of the copyright holder.</p>
+  </footer>
+</div>
+
+<script>
+  document.querySelectorAll(".copy").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const box = document.getElementById(btn.dataset.for);
+      const done = () => {
+        btn.textContent = "Copied"; btn.classList.add("done");
+        setTimeout(() => { btn.textContent = "Copy text"; btn.classList.remove("done"); }, 1800);
+      };
+      const fallback = () => { box.focus(); box.select(); btn.textContent = "Selected: press Ctrl+C"; };
+      try {
+        navigator.clipboard.writeText(box.value).then(done, fallback);
+      } catch (e) { fallback(); }
+    });
+  });
+</script>

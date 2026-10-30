@@ -41,6 +41,10 @@ Open `index.html` in any browser. No build step or server is needed.
 - Mark jobs picked up and delivered, or release a job back to the pool.
 - See open bids, active jobs, deliveries completed, and total earnings.
 
+## Advertisement
+
+`ad.html` is a one-page ad for customers and drivers, with an example receipt comparison and ready-to-post ad copy.
+
 ## Notes
 
 This is a single-device prototype: data is stored in the browser's `localStorage`, so the
