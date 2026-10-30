@@ -93,7 +93,7 @@
   <div class="bar">
     <div>
       <div class="brand">Bid<span>Pay</span> Delivery</div>
-      <div class="tag">You name the price. Drivers choose. Flat membership, zero per-order fees.</div>
+      <div class="tag">You name the price. Drivers choose. Pay as you go, or join and pay zero fees.</div>
     </div>
     <div class="roles" role="tablist">
       <button id="roleCustomer" class="on" onclick="setRole('customer')">I'm ordering</button>
@@ -107,8 +107,8 @@
   <section id="customerView">
     <div class="note">Set the price you want to pay for delivery. 100% of your bid goes to the driver
       who accepts it. Drivers can also send a counter-offer that you may accept or ignore.
-      BidPay is funded by memberships only, never by fees on your orders.</div>
-    <h2>Customer membership</h2>
+      Pay as you go with a small service fee per delivery, or become a member and pay no fees.</div>
+    <h2>Your plan</h2>
     <div id="custMember" class="card"></div>
     <h2>Post a delivery bid</h2>
     <form class="card" id="orderForm" onsubmit="postOrder(event)">
@@ -126,12 +126,13 @@
       </div>
       <div class="row">
         <div class="field"><label for="bid">Your delivery bid ($)</label>
-          <input id="bid" type="number" min="1" step="0.50" required placeholder="12.00"></div>
+          <input id="bid" type="number" min="1" step="0.50" required placeholder="12.00" oninput="renderFee()"></div>
         <div class="field"><label for="miles">Approx. distance (miles)</label>
           <input id="miles" type="number" min="0.1" step="0.1" placeholder="4.5"></div>
       </div>
       <div class="field"><label for="notes">Notes for the driver (optional)</label>
         <textarea id="notes" rows="2" maxlength="200" placeholder="Gate code, leave at door, etc."></textarea></div>
+      <div id="feePreview" class="meta field"></div>
       <button class="btn primary" type="submit">Post my bid</button>
     </form>
 
@@ -151,7 +152,7 @@
       <div class="card stat"><div class="meta">Open bids</div><div class="v" id="stOpen">0</div></div>
       <div class="card stat"><div class="meta">My active jobs</div><div class="v" id="stActive">0</div></div>
       <div class="card stat"><div class="meta">Delivered</div><div class="v" id="stDone">0</div></div>
-      <div class="card stat"><div class="meta">Total earned</div><div class="v" id="stEarned">$0.00</div></div>
+      <div class="card stat"><div class="meta">Total earned (after fees)</div><div class="v" id="stEarned">$0.00</div></div>
     </div>
 
     <h2>My active deliveries</h2>
@@ -184,17 +185,19 @@
 const KEY = "bidpay.v1";
 let state = { orders: [], role: "customer", customer: "", driver: "", members: {} };
 
-// Membership plans: the app's only revenue. Edit prices and perks here.
+// Pay-as-you-go fees for non-members, charged only on completed deliveries.
+const FEES = { customer: 2.49, driverRate: 0.15 };
+// Membership plans: members pay no per-delivery fees. Edit prices and perks here.
 const PLANS = {
   customer: [
     { id: "c-month", name: "Monthly", price: 4.99, days: 30,
-      perks: ["Unlimited delivery bids", "Accept driver counter-offers", "Cancel anytime"] },
+      perks: ["$0 service fee on every delivery", "Unlimited delivery bids", "Cancel anytime"] },
     { id: "c-year", name: "Annual", price: 49.99, days: 365, best: true,
       perks: ["Everything in Monthly", "2 months free"] },
   ],
   driver: [
     { id: "d-month", name: "Monthly", price: 9.99, days: 30,
-      perks: ["Accept unlimited jobs", "Send counter-offers", "Keep 100% of every bid"] },
+      perks: ["Keep 100% of every bid (no 15% fee)", "Accept unlimited jobs", "Cancel anytime"] },
     { id: "d-year", name: "Annual", price: 99.99, days: 365, best: true,
       perks: ["Everything in Monthly", "2 months free"] },
   ],
@@ -217,13 +220,13 @@ function seed() {
   state.orders = [
     { id: uid(), customer: "Maria", item: "Takeout from Golden Wok", pickup: "112 Main St",
       dropoff: "48 Oak Ave", bid: 9, miles: 2.8, notes: "Ring bell twice", status: "open",
-      driver: null, offers: [], created: now - 600000 },
+      customerFee: FEES.customer, driver: null, offers: [], created: now - 600000 },
     { id: uid(), customer: "Devon", item: "Pharmacy pickup", pickup: "CVS, 900 Elm Rd",
       dropoff: "17 Birch Ln Apt 3", bid: 14, miles: 6.1, notes: "", status: "open",
-      driver: null, offers: [], created: now - 300000 },
+      customerFee: FEES.customer, driver: null, offers: [], created: now - 300000 },
     { id: uid(), customer: "Aisha", item: "Hardware store order", pickup: "Ace, 55 Market St",
       dropoff: "302 Pine Ct", bid: 18.5, miles: 9.4, notes: "Heavy box", status: "open",
-      driver: null, offers: [], created: now - 60000 },
+      customerFee: FEES.customer, driver: null, offers: [], created: now - 60000 },
   ];
 }
 function uid() { return Math.random().toString(36).slice(2, 10); }
@@ -265,12 +268,17 @@ function toggleRenew(role) {
   m.autoRenew = !m.autoRenew; save();
   toast(m.autoRenew ? "Auto-renew on" : "Auto-renew off; access continues until expiry"); render();
 }
-function needMember(role) {
-  const name = role === "driver" ? state.driver : state.customer;
-  if (membership(role, name)) return true;
-  toast(`An active ${role} membership is required`);
-  document.getElementById(role === "driver" ? "drvMember" : "custMember").scrollIntoView({ behavior: "smooth" });
-  return false;
+function customerFee(name) { return membership("customer", name) ? 0 : FEES.customer; }
+function driverFee(name, bid) {
+  return membership("driver", name) ? 0 : Math.round(bid * FEES.driverRate * 100) / 100;
+}
+function feesPaid(role, name) {
+  return state.orders.filter(o => o.status === "delivered" &&
+    (role === "driver" ? o.driver === name : o.customer === name))
+    .reduce((t, o) => t + ((role === "driver" ? o.driverFee : o.customerFee) || 0), 0);
+}
+function feeLabel(role) {
+  return role === "driver" ? `${FEES.driverRate * 100}% of each bid` : `${money(FEES.customer)} per delivery`;
 }
 function memberPanel(role, name) {
   const m = membership(role, name);
@@ -280,15 +288,17 @@ function memberPanel(role, name) {
     <span><button class="btn sm" onclick="toggleRenew('${role}')">${m.autoRenew ? "Turn off auto-renew" : "Turn on auto-renew"}</button>
     ${PLANS[role].filter(p => p.id !== m.plan).map(p =>
       `<button class="btn sm" onclick="subscribe('${role}','${p.id}')">Add ${p.name}</button>`).join(" ")}</span></div>`;
-  return `<div class="meta">${role === "driver"
-      ? "Drivers need a membership to accept jobs or send counter-offers."
-      : "Customers need a membership to post delivery bids."}</div>
+  const paid = feesPaid(role, name);
+  return `<div><strong>Pay as you go</strong> <span class="meta">(no membership)</span></div>
+    <div class="meta">Free to use. BidPay charges a fee of ${feeLabel(role)}, only when a delivery is
+      completed.${paid ? ` You've paid <strong style="color:var(--warn)">${money(paid)}</strong> in fees so far.` : ""}
+      Members pay $0 in fees.</div>
     <div class="plans">${PLANS[role].map(p => `<div class="plan ${p.best ? "best" : ""}">
       <div>${p.name}${p.best ? ' <span class="badge" style="font-size:12px">Best value</span>' : ""}</div>
       <div class="amt">${money(p.price)}<span class="meta" style="font-size:13px;font-weight:400">
         / ${p.days === 365 ? "year" : "month"}</span></div>
       <ul>${p.perks.map(x => `<li>${x}</li>`).join("")}</ul>
-      <div class="actions"><button class="btn sm primary" onclick="subscribe('${role}','${p.id}')">Join ${p.name}</button></div>
+      <div class="actions"><button class="btn sm primary" onclick="subscribe('${role}','${p.id}')">Join ${p.name}: no fees</button></div>
     </div>`).join("")}</div>
     <div class="meta" style="margin-top:8px">Demo only: no real payment is taken.</div>`;
 }
@@ -314,16 +324,16 @@ function postOrder(e) {
   const bid = parseFloat(v("bid"));
   if (!(bid >= 1)) return toast("Bid must be at least $1.00");
   state.customer = v("cName");
-  if (!needMember("customer")) return render();
   state.orders.unshift({
     id: uid(), customer: state.customer, item: v("item"), pickup: v("pickup"), dropoff: v("dropoff"),
     bid, miles: parseFloat(v("miles")) || null, notes: v("notes"), status: "open",
+    customerFee: customerFee(state.customer),
     driver: null, offers: [], created: Date.now(),
   });
   save();
   e.target.reset();
   document.getElementById("cName").value = state.customer;
-  toast("Bid posted — drivers can see it now");
+  toast("Bid posted. Drivers can see it now");
   render();
 }
 function raiseBid(id) {
@@ -335,6 +345,7 @@ function raiseBid(id) {
 function acceptOffer(id, idx) {
   const o = find(id), off = o.offers[idx];
   o.bid = off.amount; o.driver = off.driver; o.status = "accepted"; o.offers = [];
+  o.driverFee = driverFee(off.driver, off.amount);
   save(); toast(off.driver + " accepted at " + money(off.amount)); render();
 }
 function declineOffer(id, idx) { find(id).offers.splice(idx, 1); save(); render(); }
@@ -350,14 +361,15 @@ function needDriver() {
   return !!state.driver;
 }
 function acceptBid(id) {
-  if (!needDriver() || !needMember("driver")) return;
+  if (!needDriver()) return;
   const o = find(id);
   if (o.status !== "open") return toast("This bid is no longer available");
   o.status = "accepted"; o.driver = state.driver; o.offers = [];
-  save(); toast("Job accepted — " + money(o.bid) + " is yours"); render();
+  o.driverFee = driverFee(state.driver, o.bid);
+  save(); toast("Job accepted. You'll keep " + money(o.bid - o.driverFee)); render();
 }
 function counter(id) {
-  if (!needDriver() || !needMember("driver")) return;
+  if (!needDriver()) return;
   const o = find(id);
   const n = parseFloat(prompt("Your counter-offer ($):", (o.bid + 3).toFixed(2)));
   if (!(n > 0)) return;
@@ -369,12 +381,12 @@ function advance(id) {
   const o = find(id);
   o.status = o.status === "accepted" ? "picked_up" : "delivered";
   if (o.status === "delivered") o.deliveredAt = Date.now();
-  save(); toast(o.status === "delivered" ? "Delivered! " + money(o.bid) + " earned" : "Marked picked up");
+  save(); toast(o.status === "delivered" ? "Delivered! " + money(o.bid - (o.driverFee || 0)) + " earned" : "Marked picked up");
   render();
 }
 function release(id) {
   if (!confirm("Release this job back to other drivers?")) return;
-  const o = find(id); o.status = "open"; o.driver = null; save(); render();
+  const o = find(id); o.status = "open"; o.driver = null; o.driverFee = 0; save(); render();
 }
 
 // ---- Rendering ----
@@ -395,7 +407,18 @@ function orderCard(o, actions, extra = "") {
   </div>`;
 }
 
+function renderFee() {
+  const name = document.getElementById("cName").value.trim() || state.customer;
+  const bid = parseFloat(document.getElementById("bid").value) || 0;
+  const fee = customerFee(name);
+  document.getElementById("feePreview").innerHTML = fee
+    ? `You'll pay ${money(bid)} bid + ${money(fee)} service fee = <strong style="color:var(--text)">${money(bid + fee)}</strong>.
+       Members pay no service fee.`
+    : `Member: no service fee. You'll pay <strong style="color:var(--text)">${money(bid)}</strong>.`;
+}
+
 function renderCustomer() {
+  renderFee();
   document.getElementById("cName").value ||= state.customer;
   document.getElementById("custMember").innerHTML = memberPanel("customer", state.customer);
   const mine = state.orders.filter(o => !state.customer || o.customer === state.customer);
@@ -414,7 +437,10 @@ function renderCustomer() {
     } else if (o.status === "delivered" || o.status === "cancelled") {
       a = `<button class="btn sm" onclick="removeOrder('${o.id}')">Remove</button>`;
     }
-    return orderCard(o, a, extra);
+    const fee = o.customerFee || 0;
+    const total = `<div class="meta">${fee ? `Bid ${money(o.bid)} + ${money(fee)} service fee = <strong style="color:var(--text)">${money(o.bid + fee)}</strong>`
+      : `Member: no service fee. You pay <strong style="color:var(--text)">${money(o.bid)}</strong>`}${o.status === "cancelled" ? " (not charged)" : ""}</div>`;
+    return orderCard(o, a, total + extra);
   }).join("");
 }
 
@@ -436,11 +462,15 @@ function renderDriver() {
   document.getElementById("stOpen").textContent = state.orders.filter(o => o.status === "open").length;
   document.getElementById("stActive").textContent = active.length;
   document.getElementById("stDone").textContent = done.length;
-  document.getElementById("stEarned").textContent = money(done.reduce((s, o) => s + o.bid, 0));
+  document.getElementById("stEarned").textContent =
+    money(done.reduce((s, o) => s + o.bid - (o.driverFee || 0), 0));
 
+  const keep = (bid, fee) => `<div class="meta">You keep <strong style="color:var(--text)">${money(bid - fee)}</strong>${
+    fee ? ` after ${money(fee)} fee (${FEES.driverRate * 100}%). Members keep 100%.` : " (member: no fee)"}</div>`;
   document.getElementById("driverActive").innerHTML = active.length ? active.map(o => orderCard(o,
     `<button class="btn sm primary" onclick="advance('${o.id}')">${o.status === "accepted" ? "Mark picked up" : "Mark delivered"}</button>
-     ${o.status === "accepted" ? `<button class="btn sm danger" onclick="release('${o.id}')">Release job</button>` : ""}`
+     ${o.status === "accepted" ? `<button class="btn sm danger" onclick="release('${o.id}')">Release job</button>` : ""}`,
+    keep(o.bid, o.driverFee || 0)
   )).join("") : `<div class="empty">No active jobs. Accept a bid below.</div>`;
 
   document.getElementById("openBids").innerHTML = open.length ? open.map(o => {
@@ -448,7 +478,8 @@ function renderDriver() {
     return orderCard(o,
       `<button class="btn sm primary" onclick="acceptBid('${o.id}')">Accept ${money(o.bid)}</button>
        <button class="btn sm" onclick="counter('${o.id}')">${mine ? "Update counter" : "Counter-offer"}</button>`,
-      mine ? `<div class="meta" style="margin-top:6px">Your counter: ${money(mine.amount)} (pending)</div>` : "");
+      keep(o.bid, me ? driverFee(me, o.bid) : Math.round(o.bid * FEES.driverRate * 100) / 100) +
+      (mine ? `<div class="meta" style="margin-top:6px">Your counter: ${money(mine.amount)} (pending)</div>` : ""));
   }).join("") : `<div class="empty">No open bids match your filter.</div>`;
 }
 
