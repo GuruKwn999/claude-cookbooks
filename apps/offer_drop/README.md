@@ -1,4 +1,4 @@
-# BidPay Delivery
+# OfferDrop Delivery
 
 **© Pamela Logan 2020-2026. All rights reserved.** Created October 30, 2026. Last updated October 30, 2026.
 This folder is proprietary and is **not** covered by the repository's MIT License. See [LICENSE](LICENSE).
@@ -8,12 +8,12 @@ delivery, and drivers choose whether to accept it. No platform fee sits between 
 
 ## Business model: pay as you go, or join
 
-Both customers and drivers choose how they pay BidPay:
+Both customers and drivers choose how they pay OfferDrop:
 
 | | Pay as you go (no membership) | Monthly member | Annual member |
 |---|---|---|---|
 | Customer | $2.49 service fee per delivery | $4.99 / month, no fees | $49.99 / year, no fees |
-| Driver | 15% of each bid | $9.99 / month, keeps 100% | $99.99 / year, keeps 100% |
+| Driver | 15% of each offer | $9.99 / month, keeps 100% | $99.99 / year, keeps 100% |
 
 Non-members pay more over time. For example, a customer with 3 deliveries a month pays $7.47 in
 fees versus $4.99 for a membership, and a driver completing 10 jobs at $12 pays $18.00 versus $9.99.
@@ -30,19 +30,19 @@ Open `index.html` in any browser. No build step or server is needed.
 
 **Customers ("I'm ordering")**
 - Pay as you go, or join a membership to drop the service fee.
-- See the total (bid + any fee) before posting.
-- Post a delivery bid: item, pickup, drop-off, distance, and the price you'll pay.
-- Change your bid or cancel while it's waiting for a driver.
+- See the total (offer + any fee) before posting.
+- Post a delivery offer: item, pickup, drop-off, distance, and the price you'll pay.
+- Change your offer or cancel while it's waiting for a driver.
 - Review driver counter-offers and accept or decline them.
 - Track status: waiting → driver on the way → picked up → delivered.
 
 **Drivers ("I'm driving")**
 - Pay as you go (15% fee per job), or join a membership to keep 100%.
 - See what you'll keep on every job before accepting.
-- Browse open bids, filter by minimum pay, and sort by pay, $/mile, or newest.
-- Accept a bid at the customer's price, or send a counter-offer.
+- Browse open offers, filter by minimum pay, and sort by pay, $/mile, or newest.
+- Accept an offer at the customer's price, or send a counter-offer.
 - Mark jobs picked up and delivered, or release a job back to the pool.
-- See open bids, active jobs, deliveries completed, and total earnings.
+- See open offers, active jobs, deliveries completed, and total earnings.
 
 ## Advertisement
 
